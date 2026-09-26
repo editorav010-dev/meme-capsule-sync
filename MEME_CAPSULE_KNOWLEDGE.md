@@ -676,3 +676,7 @@ CRITICAL RULES & CONSTRAINTS:
 ```
 
 Added by Person A on [26/sep/2026] — testing the sync workflow.
+
+
+
+waahh bhencho chal gaya workflow finally
