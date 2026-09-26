@@ -701,12 +701,12 @@ Social Media:
   Threads: https://www.threads.com/@capsule.meme
 
 ECOSYSTEM STRUCTURE:
-1. PUBLIC MOBILE APP (com.meme.capsule):
+1. PUBLIC MOBILE APP (com.meme.capsule - v2.8 / versionCode 19):
    - Tech: React 19, TypeScript, Vite 6, Tailwind CSS v4, Capacitor 8 Android container.
-   - Core UX: 4-card 3D perspective spring deck (@react-spring/web, @use-gesture/react), 7-meme FIFO prefetch buffer, instant-touch 38x38 overlay buttons (onPointerDown with debounce), 4-button CTA bar (LIKE, VAULT, PIN, SHARE).
-   - Viral Sharing: Neo-Brutalist Share Sheet with live thumbnail preview, auto-attached Play Store link, 6 animated social media SVGs (WhatsApp, Instagram, Facebook, X, Telegram, Discord), QuickShare, More Options (#FF8C00 native chooser).
+   - Core UX: 4-card 3D perspective spring deck (@react-spring/web, @use-gesture/react), 7-meme FIFO prefetch buffer, zero floating action buttons over the Meme Box, and 4 primary rectangular CTA buttons horizontally below the Meme Box: LIKE -> VAULT -> PIN -> MORE (⋮). Tapping MORE opens an anchored secondary popup menu containing DOWNLOAD, SHARE, and REPORT.
+   - Viral Sharing: Persistent Share Sheet Ribbon (#f4c300 handle bar) anchored immediately above the 3-tab bottom navigation dock (Home, Vault, Mood Boards) when closed; expands smoothly upward via compositor-friendly translate3d(...) when opened. Cleaned Share Sheet UI (removed "Auto-Attached Share Message:", "Quick Dispatch", "6 Animated Targets", "Raw Protocol", and "Includes PLAY STORE DOWNLOAD LINK") while preserving the promotional message + Play Store link payload, live thumbnail preview, 6 animated social media SVGs (WhatsApp, Instagram, Facebook, X, Telegram, Discord), QuickShare, More Options (#FF8C00 native chooser), and Copy to Clipboard.
    - Native Java: MainActivity.java injects "window.MemeCapsuleAndroid" for Scoped MediaStore gallery saving (Pictures/Meme Capsule) and targeted intent sharing (shareImageToApp).
-   - Collections, Settings & Monetization: Meme Vault (free limit 20, Pro unlimited), Mood Boards, dedicated 4th Settings & Privacy tab (consolidating Privacy Policy v1.1, full history/data erasure, and feed/buffer/shake toggles), AdMob interstitials (every 4th drop), In-App Purchase (₹99 remove_ads_forever).
+   - Collections, Settings & Monetization: Meme Vault (free limit 20, Pro unlimited), Mood Boards, dedicated Settings & History page accessible from the top header gear button (consolidating Privacy Policy v1.1, 4 granular history/data erasure controls, and feed/buffer/shake toggles), AdMob interstitials (every 4th drop), In-App Purchase (₹99 remove_ads_forever).
 
 2. PUBLIC WEB PLATFORM (memecapsule.wtf):
    - Tech: React 18, Vite 5, Tailwind CSS v3, React Router DOM v6, static HTML prerendering (vite-plugin-prerender with ReactSSRRenderer) on GitHub Pages.
@@ -733,3 +733,4 @@ CRITICAL RULES & CONSTRAINTS:
 4. CLEAR CODEBASE BOUNDARIES: Maintain strict separation between Mobile APK, Promo Web, and Edge Backend.
 =========================================================
 ```
+
