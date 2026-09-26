@@ -220,7 +220,7 @@ The mobile app rejects infinite feed algorithms. It is designed as an **Arcade V
 
 | Feature Category | Feature | Implementation Component | Technical Description & Behavior |
 | :--- | :--- | :--- | :--- |
-| **Core Dispenser** | **Hero Landing (`HIT ME`)** | `src/App.tsx` | Dominant Neo-Brutalist `HIT ME` button with pulsing glow aura, compact secondary actions (`BONUS DROP` & `TRIPLE DROP`), and header Streak & Privacy badges. |
+| **Core Dispenser** | **Hero Landing (`HIT ME`)** | `src/App.tsx` | Dominant Neo-Brutalist `HIT ME` button with pulsing glow aura, compact secondary actions (`BONUS DROP` & `TRIPLE DROP`), and header Streak & Settings shortcut badges. |
 | **Feed Pipeline** | **7-Meme FIFO Prefetch Buffer** | `src/App.tsx` | Maintains an in-memory queue of 7 preloaded memes (`PIPELINE_TARGET_SIZE = 7`) for instant card swiping with zero delay. |
 | **Feed Sourcing** | **Hybrid D1/R2 + SFW Reddit** | `src/App.tsx` | Fetches curated memes from Cloudflare D1/R2 (`/api/random-meme`) and alternates every 3rd fetch (`totalMemesViewed % 3 === 0`) with Reddit (`meme-api.com/gimme`), strictly dropping NSFW and spoilers. |
 | **Card Deck** | **4-Card 3D Perspective Stack** | `src/components/MemeStack.tsx` & `MemeCard.tsx` | Spring-physics 4-card stack powered by `@react-spring/web` and `@use-gesture/react`. Supports Swipe Right (`keep`), Swipe Left (`skip`), Swipe Up (`save`), Double-Tap (`DANK!` shake), and Long-Press (600ms gallery download). |
@@ -231,6 +231,7 @@ The mobile app rejects infinite feed algorithms. It is designed as an **Arcade V
 | **Targeted Sharing** | **Direct Social Intent Bridge** | `MainActivity.java` | `shareImageToApp()` targets specific package names (WhatsApp, Instagram, Facebook, X, Telegram, Discord) with automatic fallback to `Intent.createChooser`. |
 | **Collections** | **Meme Vault (Favorites)** | `src/App.tsx` | Searchable local gallery of saved memes with viewed/fetched/liked counters. Free tier limit: 20 memes (`FREE_VAULT_LIMIT = 20`); Pro tier: unlimited. |
 | **Themed Binders** | **Mood Boards ("Pinned Energy")** | `src/App.tsx`, `CreateBoardModal.tsx`, `UnpinModal.tsx` | Custom color-coded mood boards (`primary`, `secondary`, `tertiary`) with synchronized `meme_pinboard` + `meme_favorites` storage for reliable thumbnail rendering. |
+| **Settings & Privacy** | **Settings & History Erasure Page** | `src/App.tsx` (`activeTab === 'settings'`) | 4th bottom navigation tab & header gear shortcut consolidating **Privacy Policy (v1.1)** (removed from the face of Home/Vault/Mood Boards), **Local Device Footprint KPIs**, **Clear Past Viewing History & Stats**, **Empty Vault & Mood Boards**, **Unblock Reported Memes**, **Delete All App History & Data** (with 2-step confirmation), **Capsule Feed Toggles** (Hybrid Reddit Relay, 7-Meme Turbo Buffer, Card Shake Effects), **Pro Upgrade/Restore**, and **Replay Gesture Tour**. |
 | **Safety & UGC** | **Content Reporting & Blocklist** | `src/ReportModal.tsx` & `src/App.tsx` | Store-compliant reporting modal (`POST /api/report`). Reported memes are written to `localStorage('reported_memes')` and permanently filtered out of rotation. |
 | **Monetization** | **AdMob + In-App Purchase (PRO)** | `src/ProUpgradeModal.tsx` & `src/App.tsx` | Interstitial ads every 4th meme + Rewarded ads for bonus drops (`@capacitor-community/admob`). One-time Pro upgrade (`remove_ads_forever` via `@capgo/native-purchases`) unlocks Zero Ads, Unlimited Vault, and permanent Triple Drop. |
 
@@ -531,6 +532,7 @@ All three codebases share a unified **Neo-Brutalist Cyber-Arcade** design langua
 | **Mobile App (APK)** | Scoped MediaStore Native Java Bridge | `[IMPLEMENTED]` | `MainActivity.java` (`Pictures/Meme Capsule`) |
 | **Mobile App (APK)** | Targeted Social Share Intent Bridge | `[IMPLEMENTED]` | `MainActivity.java` (`shareImageToApp`) |
 | **Mobile App (APK)** | Meme Vault (Favorites) & Mood Boards | `[IMPLEMENTED]` | `src/App.tsx`, `CreateBoardModal.tsx`, `UnpinModal.tsx` |
+| **Mobile App (APK)** | Settings, Privacy & History Erasure Page| `[IMPLEMENTED]` | `src/App.tsx` (`activeTab === 'settings'`, full history wipe) |
 | **Mobile App (APK)** | AdMob Interstitials & Rewarded Drops | `[IMPLEMENTED]` | `@capacitor-community/admob` |
 | **Mobile App (APK)** | In-App Purchases (Pro Tier ₹99) | `[IMPLEMENTED]` | `@capgo/native-purchases` (`remove_ads_forever`) |
 | **Mobile App (APK)** | UGC Reporting & Local Blocklist | `[IMPLEMENTED]` | `ReportModal.tsx` + `localStorage('reported_memes')` |
@@ -647,7 +649,7 @@ ECOSYSTEM STRUCTURE:
    - Core UX: 4-card 3D perspective spring deck (@react-spring/web, @use-gesture/react), 7-meme FIFO prefetch buffer, instant-touch 38x38 overlay buttons (onPointerDown with debounce), 4-button CTA bar (LIKE, VAULT, PIN, SHARE).
    - Viral Sharing: Neo-Brutalist Share Sheet with live thumbnail preview, auto-attached Play Store link, 6 animated social media SVGs (WhatsApp, Instagram, Facebook, X, Telegram, Discord), QuickShare, More Options (#FF8C00 native chooser).
    - Native Java: MainActivity.java injects "window.MemeCapsuleAndroid" for Scoped MediaStore gallery saving (Pictures/Meme Capsule) and targeted intent sharing (shareImageToApp).
-   - Collections & Monetization: Meme Vault (free limit 20, Pro unlimited), Mood Boards, AdMob interstitials (every 4th drop), In-App Purchase (₹99 remove_ads_forever).
+   - Collections, Settings & Monetization: Meme Vault (free limit 20, Pro unlimited), Mood Boards, dedicated 4th Settings & Privacy tab (consolidating Privacy Policy v1.1, full history/data erasure, and feed/buffer/shake toggles), AdMob interstitials (every 4th drop), In-App Purchase (₹99 remove_ads_forever).
 
 2. PUBLIC WEB PLATFORM (memecapsule.wtf):
    - Tech: React 18, Vite 5, Tailwind CSS v3, React Router DOM v6, static HTML prerendering (vite-plugin-prerender with ReactSSRRenderer) on GitHub Pages.
@@ -676,3 +678,4 @@ CRITICAL RULES & CONSTRAINTS:
 ```
 
 Added by Person A on [26/sep/2026] — testing the sync workflow.
+
