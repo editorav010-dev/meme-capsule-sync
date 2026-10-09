@@ -480,16 +480,27 @@ To prevent mixing rejected memes with uncurated backlog items, Migration 012 int
 - Media assets (WebP, JPEG, PNG, GIF, MP4) reside in Cloudflare R2 bucket `memes`.
 - Serves content publicly with **zero egress bandwidth charges**, edge caching, and high availability.
 
-### 5.4 Multi-Judge Consensus & Layer 0 Keyboard Curation (`/curate`, `/categorise`)
-Designed for rapid, high-volume human evaluation. Curators use Layer 0 keyboard shortcuts:
-- `K`: **Keep** (Approved for public delivery).
-- `E`: **Exclude** (Archived; hidden from public drops).
-- `D`: **Duplicate** (Flag as duplicate with target ID).
-- `L`: **Review Later** (Deferred to secondary review queue).
-- `1-9, 0, -, =`: Toggle topic taxonomy.
-- `Q, W, E, A, S, F`: Select humor tone.
-- `Z, C, V, B, N, M, J, P, O`: Select humor mechanisms.
-- `Cmd/Ctrl + Z`: Instant undo last curation decision.
+### 5.4 Multi-Judge Consensus, AI-Judgement Review & Layer 0 Keyboard Curation (`/curate`, `/categorise`)
+Designed for rapid, high-volume evaluation. Curators (Judges 1, 2, 3) review memes pre-evaluated by offline AI models (AI Judges 4 & 5):
+
+**AI-Judgement Review Workflow for Human Judges (Judges 1, 2, 3):**
+- **State A (AI Consensus):** When AI Judge 4 and AI Judge 5 agree (both Keep or both Exclude), the human judge can press `Space` or `Enter` to fast-approve the consensus in a single stroke. If taxonomy details differ, pressing `4` adopts Judge 4, pressing `5` adopts Judge 5, or `Space/Enter` adopts Judge 4 by default.
+- **State B (AI Disagreement):** When AI Judge 4 and AI Judge 5 reach conflicting conclusions, both decisions are displayed side-by-side with hotkeys: `4` (Adopt Judge 4), `5` (Adopt Judge 5), or `O` (Manual Override).
+- **Single AI Ready:** When only one AI has completed evaluation, human judges can press `Space` or `Enter` to instantly adopt the available evaluation without roadblock.
+- **Authoritative Single-Judge Finality (`POST /api/curate/approve`):** Any single human judge adoption or manual approval is authoritative and immediately final: it writes to `meme_curation`, writes to `meme_curation_final`, and synchronizes `memes` (`is_active`, `status`, `curation_status`, `tags`, `category`) in an atomic transaction. Memes do not require SuperAdmin arbitration.
+- **Force Remove (`Shift+Delete` / `POST /api/curate/force-remove`):** For non-meme / invalid media in the corpus, pressing `Shift+Delete` or clicking `FORCE REMOVE` permanently vanishes the file from R2 media storage and purges all records across D1 tables (`memes`, `meme_curation`, `meme_curation_final`, `ai_curation_predictions`, etc.). This destructive action is non-undoable.
+- **Layer 0 Keyboard Curation (Override Mode `[O]`):**
+  - `K`: **Keep** (Approved for public delivery).
+  - `X`: **Exclude** (Archived; hidden from public drops).
+  - `D`: **Duplicate** (Flag as duplicate with target ID).
+  - `R`: **Review Later** (Deferred to secondary review queue).
+  - `1-9, 0, -, =`: Toggle topic taxonomy (Max 3).
+  - `Q, W, E, A, S, F`: Select humor tone (1 dominant).
+  - `Z, C, V, B, N, M, J, P, O`: Select humor mechanisms (Max 2).
+  - `Space / Enter`: Save & Advance.
+  - `Esc`: Return from manual override to AI review view.
+  - `Cmd/Ctrl + Z` or `U`: Instant undo last curation decision.
+
 
 ### 5.5 SuperAdmin Arbitration & Authoritative Active Synchronization
 When judges diverge in their votes, the meme surfaces in the **SuperAdmin Command Center**:
