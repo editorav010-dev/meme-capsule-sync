@@ -333,13 +333,35 @@ Registered on the Android WebView as `window.MemeCapsuleAndroid`:
 - **Mood Boards ("Pinned Energy"):** Color-coded thematic binders (`primary`, `secondary`, `tertiary`) created via `CreateBoardModal.tsx`.
 - **Pinboard Synchronization:** When a meme is pinned to a board, the system synchronizes both `meme_pinboard` and `meme_favorites` records to guarantee that pinned meme thumbnails always render reliably even if the meme was not previously saved to the main vault.
 
-### 3.8 Mobile Monetization (AdMob + Google Play In-App Purchases)
+### 3.8 Mobile Monetization (AdMob + Google Play In-App Purchases & Neo-Brutalist Store)
 - **Google AdMob:**
-  - Non-intrusive full-screen interstitial ad displayed every 4th meme viewed via `@capacitor-community/admob`.
-  - Rewarded ads allow users to unlock optional bonus drops.
-- **Google Play In-App Purchase (Pro Tier):**
-  - Product ID: `remove_ads_forever` managed via `@capgo/native-purchases`.
-  - Upgrading unlocks Zero Ads, Unlimited Vault capacity, and permanent Triple Drop Mode.
+  - Non-intrusive full-screen interstitial ad displayed every 4th meme viewed via `@capacitor-community/admob`. Suppressed permanently if `hasAdsRemoved()`.
+  - Rewarded ads allow users to unlock optional bonus drops or temporary +1 session Mood Board slots. Rewarded ads remain fully optional even for users who purchased No Ads.
+- **Neo-Brutalist In-App Capsule Store (`src/components/store/`):**
+  - Full-screen game-style overlay opened via `openStore({ focus?: ProductId })`.
+  - Catalog (`src/monetization/catalog.ts`): Single source of truth containing 11 single unlocks and 5 bundles:
+    - **Single Unlocks:** `remove_ads_forever` (NO ADS), `unlimited_mood_boards` (BOARD BOSS), `fx_arcade_pack` (ARCADE FX), 4 colour themes (`theme_cyberpunk_cyan`, `theme_acid_green`, `theme_midnight_gold`, `theme_blood_orange`), and 4 drop mode packs (`pack_dark_humour`, `pack_wholesome`, `pack_desi`, `pack_gaming` - marked `available: false` / COMING SOON pending backend category endpoint).
+    - **Bundles:** `bundle_starter` (Starter Pack), `bundle_style` (Drip Pack), `bundle_meme_lovers` (Meme Head Pack), `meme_capsule_pro` (Capsule Pro), `bundle_ultimate` (Capsule Max).
+    - **Rarity Tiers:** Common (`#988ca1`), Rare (`#9b30ff`), Epic (`#dd0061`), Legendary (`#f4c300`).
+  - **Billing Engine (`@capgo/native-purchases` v8.8.1):**
+    - Displays ONLY live formatted prices from Google Play (`priceString`). Never displays base reference INR prices.
+    - Live savings badge computed dynamically: `1 - (bundlePrice / sum(componentPrices))`. Hidden if any component price is missing.
+    - Automatic purchase acknowledgement for all one-time non-consumable products to prevent Google Play 3-day refunds.
+    - Silent cancellation handling (zero intrusive error toasts on cancel).
+    - Pending payment tracking (UPI/cash delays show `PAYMENT PENDING` and reconcile on app resume / foreground).
+    - `restorePurchases()` re-queries Google Play INAPP purchases directly with `PURCHASES RESTORED` or `NOTHING TO RESTORE` toasts.
+    - Gracefully displays `STORE UNAVAILABLE` without crashing on sideloaded APKs or network failures.
+  - **Entitlements System (`src/monetization/entitlements.ts`):**
+    - Single source of truth: `useEntitlements()` hook backed by `EntitlementsContext` and cached in `localStorage`.
+    - Union-based grants model: owning a bundle automatically expands to grant all component product IDs and entitlement keys.
+    - Offline resilience: persists last verified ownership snapshot; only revokes if an online Play query confirms refund/revocation.
+    - Auto-reverts equipped cosmetics (themes, FX) to classic defaults if access is revoked.
+  - **Interactive Features:**
+    - 8-second temporary theme preview with countdown banner and auto-revert.
+    - Neo-Brutalist celebratory slam animation (`PurchaseCelebration.tsx`) on purchase confirmation.
+    - Honest bundle partial ownership warnings: "YOU ALREADY OWN N OF M ITEMS".
+    - 4 selectable Arcade FX styles: Classic, Retro Slam, Neon Glitch, Cassette Pop.
+    - Drop Mode selector with niche filters next to HIT ME button.
 
 ### 3.9 Mobile Safety, Reporting & Local Blocklist
 - **Reporting Modal (`ReportModal.tsx`):** Users can report inappropriate content (`NSFW`, `Hate Speech`, `Harassment`, `Copyright`).
