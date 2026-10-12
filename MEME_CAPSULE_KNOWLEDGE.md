@@ -9,13 +9,13 @@
 > **Official Web Platform:** [https://memecapsule.wtf](https://memecapsule.wtf) (Vite / React Multi-Page Static Prerendered)  
 > **Serverless Edge Backend:** [https://meme-capsule-eww.pages.dev](https://meme-capsule-eww.pages.dev) (Cloudflare Pages, D1 SQLite, R2 CDN)  
 > **Project Team & Engineering Leadership:**  
-> - **Anmol Verma** (`editorav010-dev` / `anmolverma.env@gmail.com`): Lead Backend Developer — Full backend engineering, serverless architecture, core algorithms, AI tools implementation, security, curation systems, and all internal backend workbenches.  
-> - **Pratham Pandey** (`bbethical010-glitch` / `bbethical010@gmail.com`): Lead Frontend Developer & Original Ideator — Founding concept, frontend landing pages, Android APK development, app theme, typography, UI/UX, Java Android bridge, and client-side integrations.  
-> - **Faraz Ahmed** (`thesplashsnize@gmail.com`): Social Media & Marketing Lead — Social media management, content planning, niche analysis, scripting, and marketing campaigns.  
+> - **Anmol Verma** (`editorav010-dev`): Lead Backend Developer — Full backend engineering, serverless architecture, core algorithms, AI tools implementation, security, curation systems, and all internal backend workbenches.  
+> - **Pratham Pandey** (`bbethical010-glitch`): Lead Frontend Developer & Original Ideator — Founding concept, frontend landing pages, Android APK development, app theme, typography, UI/UX, Java Android bridge, and client-side integrations.  
+> - **Faraz Ahmed**: Social Media & Marketing Lead — Social media management, content planning, niche analysis, scripting, and marketing campaigns.  
 > **Official App Email (User Support & Marketing):** `support@memecapsule.wtf`  
 > **Official Social Media:**  
 > Instagram: https://www.instagram.com/capsule.meme/ | X: https://x.com/memecapsule_ | Threads: https://www.threads.com/@capsule.meme  
-> **Last Master Synchronization:** October 13, 2026  
+> **Last Master Synchronization:** September 26, 2026   
 
 ---
 
@@ -145,7 +145,7 @@ Modern internet culture is trapped inside social media feeds (Instagram, TikTok,
 - **Mobile Frontend:** React 19, TypeScript 5.8, Vite 6.2, Tailwind CSS v4 (`@tailwindcss/vite`), `@react-spring/web`, `@use-gesture/react`.
 - **Web Platform & Pre-rendering:** React 18, Vite 5, Tailwind CSS v3, React Router DOM v6, static HTML pre-rendering via `vite-plugin-prerender` with deterministic `ReactSSRRenderer` for GitHub Actions CI.
 - **Edge Backend:** **Cloudflare Pages Functions** running on V8 isolates with zero cold-start latency (`functions/api/*`, `functions/reports.ts`).
-- **Database:** **Cloudflare D1** (serverless SQLite at the edge) with 14 production migrations (`000` through `012` including `011_force_removals.sql`).
+- **Database:** **Cloudflare D1** (serverless SQLite at the edge) with 13 production migrations.
 - **Media Storage:** **Cloudflare R2** (S3-compatible object storage with **$0.00 egress fees**).
 - **AI Evaluation Pipeline:** Multimodal Gemini Vision (`@google/genai`) on Cloudflare Functions and an offline Python runner executing **NVIDIA NIM Llama 3.2 11B Vision Instruct**.
 - **SEO / GEO / AEO:** 4 linked Schema.org JSON-LD entities (`WebSite`, `Organization`, `MobileApplication`, `FAQPage`), `llms.txt` and `llms-full.txt` protocols for frontier AI crawlers, and XML Sitemap.
@@ -181,7 +181,7 @@ Any meme that is unfinalized, in judging, or excluded is mathematically impossib
 
 Meme Capsule is a three-person collaborative project with a clear division of architectural, consumer-facing, and marketing responsibilities:
 
-- **Anmol Verma** (Lead Backend Developer — GitHub: [`editorav010-dev`](https://github.com/editorav010-dev), Email: `anmolverma.env@gmail.com`):
+- **Anmol Verma** (Lead Backend Developer — GitHub: [`editorav010-dev`](https://github.com/editorav010-dev)):
   - Full backend engineering & Cloudflare Pages Functions serverless architecture
   - Backend architecture and systems implementation
   - Core algorithms: randomization, deduplication, 3-tier curation status partitioning, and edge ranking
@@ -191,7 +191,7 @@ Meme Capsule is a three-person collaborative project with a clear division of ar
   - Admin, SuperAdmin, and all internal backend workbenches (/admin, /curate, /categorise, /reports, /ai-judge)
   - The underlying technical and mathematical logic behind the Meme Capsule delivery engine
 
-- **Pratham Pandey** (Lead Frontend Developer & Original Ideator — GitHub: [`bbethical010-glitch`](https://github.com/bbethical010-glitch), Email: `bbethical010@gmail.com`):
+- **Pratham Pandey** (Lead Frontend Developer & Original Ideator — GitHub: [`bbethical010-glitch`](https://github.com/bbethical010-glitch)):
   - **Original concept, initial vision, and founding idea behind Meme Capsule**
   - Frontend landing pages and promotional web platform (memecapsule.wtf)
   - Public Android mobile application development (`com.meme.capsule` via Capacitor 8, React 19, Tailwind CSS v4)
@@ -200,7 +200,7 @@ Meme Capsule is a three-person collaborative project with a clear division of ar
   - Java Android bridge (`MainActivity.java`) and Android MediaStore integrations
   - Consumer-facing frontend engineering, animations, and client build setup
 
-- **Faraz Ahmed** (Social Media & Marketing Lead — Email: `thesplashsnize@gmail.com`):
+- **Faraz Ahmed** (Social Media & Marketing Lead):
   - Management of all official Meme Capsule social media handles
   - Content planning, niche analysis, and editorial quality control of all social content
   - Scripting, brand voice, and campaign copywriting
@@ -476,9 +476,9 @@ The platform implements full client-side routing and static build prerendering a
 - **FAQ (`/faq`):** Standalone route housing an exhaustive 15-question accordion grid (`src/constants/faq.ts`) with quick back-navigation and direct app download banners.
 - **About & Press Kit (`/about`):** Dedicated route featuring official Entity Definition, Quick Facts Grid, One-Liner Copy Kit with instant clipboard copy, and downloadable brand assets (logos, OG banners).
 - **Meet the Team (`/team`):** Dedicated team page attributing core engineering leadership:
-  - **Pratham Pandey:** Lead Frontend Developer & Original Ideator (`bbethical010@gmail.com`)
-  - **Anmol Verma:** Lead Backend Developer (`anmolverma.env@gmail.com`)
-  - **Faraz Ahmed:** Social Media & Marketing Lead (`thesplashsnize@gmail.com`)
+  - **Pratham Pandey:** Lead Frontend Developer & Original Ideator
+  - **Anmol Verma:** Lead Backend Developer
+  - **Faraz Ahmed:** Social Media & Marketing Lead
 - **Privacy Policy (`/privacy`):** Store-compliant disclosures covering Google Analytics 4, AdSense cookies, AdMob identifiers, zero personal data collection, and local storage data deletion. Includes a canonical link referencing `https://memecapsule.wtf/privacy` to prevent crawler duplicate URL warnings against `public/privacy.html`.
 
 ### 4.8 Serverless Contact API via Resend Edge Function
@@ -519,30 +519,11 @@ The backend is completely serverless, deployed on Cloudflare Pages (`https://mem
 - **`POST /api/events`**: Ingests batched telemetry events into the D1 event queue.
 - **`POST /api/report`**: Receives user safety reports and logs them in `meme_reports`.
 - **`/reports`**: Serves the standalone HTML/CSS moderation dashboard for reviewing flagged content.
-- **`POST /api/curate/approve`**: Atomic single-judge adoption and authoritative finalization: writes directly to `meme_curation` and `meme_curation_final`, setting `memes.is_active = 1` and `memes.curation_status = 'keep'` without requiring SuperAdmin arbitration.
-- **`POST /api/curate/force-remove`**: Destructive endpoint permanently deleting non-memes from Cloudflare R2 and cascading D1 record deletion.
-- **`POST /api/cat/force-remove`**: Categorisation portal force remove: sets `is_active = 0, status = 'archived'`, logs to `meme_force_removals`, and physically deletes media from R2 bucket.
-- **`GET /api/cat/admin/force-removals`**: SuperAdmin audit viewer endpoint querying historical force removal logs.
-- **`GET /api/curate/next` & `/api/cat/next`**: Intelligent cursor queues serving uncurated memes, respecting authoritative finality and excluding force-removals.
-- **`GET /api/curate/stats`**: Live curation metrics dynamically calculated minus force-removed media.
+- **`/api/cat/*` & `/api/curate/*`**: Authenticated endpoints serving the multi-judge curation system.
 - **`/api/admin/*`**: Token-protected administrative endpoints for storage syncing, SQL execution, and analytics management.
 
 ### 5.2 Cloudflare D1 Database Schemas & 3-Tier Partitioning Architecture (Migration 012)
-Meme Capsule uses Cloudflare D1 (serverless SQLite). The database schema has evolved through **14 migration files** (`d1/migrations/`):
-1. `000_complete_setup.sql`: Core schema initialization.
-2. `002_analytics.sql`: Event tracking, interactions, and ranking tables.
-3. `003_categorisation.sql`: Multi-judge accounts and editorial taxonomy.
-4. `004_ai_judge.sql`: AI judge operator tables and evaluation logs.
-5. `004_curation.sql`: Multi-judge consensus tracking tables.
-6. `005_curation_final.sql`: SuperAdmin authoritative resolution tables.
-7. `006_judge_ai_presets.sql`: Private AI vision presets per judge.
-8. `007_add_judge4_judge5.sql`: Expansion of judge accounts for majority consensus.
-9. `008_optimize_curation_indexes.sql`: High-performance composite indexes.
-10. `009_add_api_password_to_users.sql`: SHA-256 hashed API passwords for judge sessions.
-11. `010_enforce_superadmin_active_and_cleanup_judges.sql`: Session cleanup and active role enforcement.
-12. `011_force_removals.sql`: Permanent deletion audit log table `meme_force_removals`.
-13. `011_reconcile_active_and_curation_sync.sql`: Synchronization of active counts between Admin and Curation portals.
-14. `012_add_curation_status_to_memes.sql`: 3-tier partitioning architecture introducing `curation_status` (`active`, `excluded`, `backlog`).
+Meme Capsule uses Cloudflare D1 (serverless SQLite). The database schema has evolved through 13 migration files (`d1/migrations/`).
 
 #### The 3-Tier Partitioning Architecture (`curation_status`):
 To prevent mixing rejected memes with uncurated backlog items, Migration 012 introduced the `curation_status` column on the `memes` table:
@@ -587,8 +568,6 @@ To prevent mixing rejected memes with uncurated backlog items, Migration 012 int
    - `meme_id` (TEXT PRIMARY KEY), `reason` (TEXT), `created_at` (DATETIME).
 7. **`meme_events` & `meme_analytics` (Telemetry & Rankings):**
    - Event queue and aggregated engagement/virality metrics.
-8. **`meme_force_removals` (Permanent Purge Audit Log — Migration 011):**
-   - `id` (TEXT PRIMARY KEY DEFAULT 'frm-...'), `meme_id` (TEXT NOT NULL UNIQUE), `title` (TEXT), `image_url` (TEXT), `storage_path` (TEXT), `r2_key` (TEXT), `removed_by` (TEXT NOT NULL), `removed_by_name` (TEXT), `reason` (TEXT), `r2_deleted` (INTEGER NOT NULL DEFAULT 0), `r2_error` (TEXT), `removed_at` (TEXT), `r2_deleted_at` (TEXT). Ensures immutable auditing of all physically purged media.
 
 ### 5.3 Object Storage & Media Delivery (Cloudflare R2 Bucket `memes`)
 - Media assets (WebP, JPEG, PNG, GIF, MP4) reside in Cloudflare R2 bucket `memes`.
@@ -659,24 +638,9 @@ Standalone, token-protected dashboard rendering directly from `functions/reports
   - *Skip Rate:* Percentage of views lasting under 1.5 seconds.
   - *Percentile Rankings:* Normalized scoring used for internal editorial insight.
 
-### 5.10 Cross-Codebase Knowledge Sync Architecture (`.knowledge/`)
-To eliminate knowledge fragmentation and maintain synchronization across all three codebases (`Meme-Capsule` backend, `com.meme.capsule` Android app, and companion web platform):
-- **Central Repository:** `editorav010-dev/meme-capsule-sync` hosts the canonical master `MEME_CAPSULE_KNOWLEDGE.md`.
-- **Isolated `.knowledge/` Tooling:**
-  - `.knowledge/fetch-knowledge.ps1` & `.knowledge/fetch-knowledge.sh`: Fetches latest master knowledge, auto-detects project root, decodes base64 UTF-8, and records commit SHA.
-  - `.knowledge/update-knowledge.ps1` & `.knowledge/update-knowledge.sh`: Pushes updated knowledge with base64 payload and HTTP 409 conflict detection.
-  - `.knowledge/.knowledge_meta.json`: Tracks the live synchronized GitHub commit SHA.
-- **Git Tracking & Secret Isolation:** `.gitignore` is configured to track all `.knowledge/` scripts and metadata while strictly ignoring local secrets (`.knowledge/.env`, `.knowledge/*.local`).
-- **Strict Scope Boundary Enforcement:**
-  - Backend agents ONLY modify Edge Backend, D1, R2, Admin, Curate, and AI Judge sections.
-  - Android APK agents ONLY modify Mobile APK, Gradle, In-App Store, Billing, and Bridge sections.
-  - Web platform agents ONLY modify Promotional Web, SEO/GEO, and marketing sections.
-  - External sections must always be preserved verbatim without modification.
-
 ---
 
 ## 6. UNIFIED NEO-BRUTALIST DESIGN SYSTEM & DESIGN TOKENS
-
 
 All three codebases share a unified **Neo-Brutalist Cyber-Arcade** design language:
 
@@ -734,18 +698,15 @@ All three codebases share a unified **Neo-Brutalist Cyber-Arcade** design langua
 | **Promo Web (`.wtf`)** | Google AdSense Unit `meme1` | `[IMPLEMENTED]` | `AdBanner.tsx` (`slot 6291908699`, deferred load) |
 | **Promo Web (`.wtf`)** | Deterministic Static Prerender (6 Routes) | `[IMPLEMENTED]` | `vite-plugin-prerender` + per-route SEO injection |
 | **Edge Backend** | Serverless Edge API on Cloudflare Pages | `[IMPLEMENTED]` | `functions/api/random-meme.ts`, `daily-meme.ts`, etc. |
-| **Edge Backend** | Cloudflare D1 SQLite Database (14 Migrations)| `[IMPLEMENTED]` | `d1/migrations/` (000 through 012 + 011_force_removals) |
+| **Edge Backend** | Cloudflare D1 SQLite Database (13 Migrations)| `[IMPLEMENTED]` | `d1/migrations/` (000 through 012) |
 | **Edge Backend** | 3-Tier Status Partitioning (Migration 012) | `[IMPLEMENTED]` | `curation_status`: 111 Keep, 53 Excluded, 4,947 Backlog |
-| **Edge Backend** | Cloudflare R2 Media Bucket (`env.MEMES_BUCKET`) | `[IMPLEMENTED]` | `wrangler.toml`, zero egress public CDN |
-| **Edge Backend** | AI-Judgement Review & Instant Adoption | `[IMPLEMENTED]` | `functions/api/curate/approve.ts` & `AiReviewPanel.tsx` |
-| **Edge Backend** | Irreversible Force Removal & Audit Engine | `[IMPLEMENTED]` | `functions/api/curate/force-remove.ts` & `meme_force_removals` |
+| **Edge Backend** | Cloudflare R2 Media Bucket (`env.BUCKET`) | `[IMPLEMENTED]` | `wrangler.toml`, zero egress public CDN |
 | **Edge Backend** | Multi-Judge Consensus Portal (`/curate`) | `[IMPLEMENTED]` | `src/curate/CurateApp.tsx` (Layer 0 keyboard shortcuts) |
-| **Edge Backend** | SuperAdmin Arbitration & Audit Dashboard | `[IMPLEMENTED]` | `CurateSuperDashboard.tsx` & `ForceRemovalAudit.tsx` |
+| **Edge Backend** | SuperAdmin Arbitration Dashboard | `[IMPLEMENTED]` | `src/curate/super/CurateSuperDashboard.tsx` |
 | **Edge Backend** | Admin Console with 5 Stats Cards (`/admin`)| `[IMPLEMENTED]` | `src/admin/AdminApp.tsx` (Total, Active, Excl, Arch, Draft)|
 | **Edge Backend** | Token-Gated Moderation Dashboard (`/reports`)| `[IMPLEMENTED]` | `functions/reports.ts` (Archive & Blacklist actions) |
 | **Edge Backend** | Multimodal AI Pre-Curator Loop (`/ai-judge`)| `[IMPLEMENTED]` | Gemini Vision API & NVIDIA NIM Llama 3.2 Vision runner |
 | **Edge Backend** | Telemetry Recalculation Engine | `[IMPLEMENTED]` | `functions/api/admin/analytics/recalculate.ts` |
-| **Edge Backend** | Isolated Cross-Platform Knowledge Sync | `[IMPLEMENTED]` | `.knowledge/` (`fetch-knowledge` & `update-knowledge`) |
 | **Discontinued UI** | Legacy Pastel Landing UI (`App.tsx`) | `[REMOVED]` | Removed from backend repo; default route `/` is `/curate` |
 | **Discontinued Web** | Giscus / Formspree Contact Dependencies | `[REMOVED]` | Migrated to Cloudflare Pages Functions + Resend API |
 | **Discontinued Web** | Stacking Card Scroll Animation | `[REVERTED]` | Replaced with authentic Kage scroll reveal |
@@ -776,15 +737,6 @@ All three codebases share a unified **Neo-Brutalist Cyber-Arcade** design langua
 7. **Service Worker Clashing in Android WebView (RESOLVED):**
    - *Previous state:* Old `sw.js` caused `Failed to fetch` errors inside Capacitor WebViews.
    - *Resolution:* Service worker registration was explicitly disabled in the mobile client.
-8. **Multi-Judge Repetitive Review Bottleneck (RESOLVED):**
-   - *Previous state:* All memes required duplicate independent human reviews across Judges 1–3, followed by SuperAdmin arbitration.
-   - *Resolution:* Implemented the AI-Judgement Review Workflow (`functions/api/curate/approve.ts`, `AiReviewPanel.tsx`). Any single human judge can fast-approve AI consensus (`Space/Enter`) or adopt either AI Judge 4 (`4`) or AI Judge 5 (`5`). Adoptions are authoritatively final, updating `meme_curation_final` directly.
-9. **Irrevocable Purge for Prohibited / Corrupt Media (RESOLVED - Migration 011):**
-   - *Previous state:* Non-meme or copyright-infringing uploads could only be tagged as `excluded`, leaving the media stored in R2.
-   - *Resolution:* Implemented Force Remove (`functions/api/curate/force-remove.ts`, `functions/api/cat/force-remove.ts`). Hotkeys `Shift+Delete` (direct purge) and `Shift+X` (audit modal with reason) permanently delete media from R2 bucket `memes` and record an immutable audit row in `meme_force_removals`.
-10. **Cross-Codebase Sync Script Disappearance (RESOLVED):**
-    - *Previous state:* `.knowledge/` was gitignored, causing synchronization scripts to be stripped on fresh clones or branch checkouts.
-    - *Resolution:* Isolated all synchronization scripts and metadata inside `.knowledge/` (`fetch-knowledge.ps1`, `fetch-knowledge.sh`, `update-knowledge.ps1`, `update-knowledge.sh`, `.knowledge_meta.json`). Updated `.gitignore` to track all `.knowledge/` scripts while ignoring secrets (`.knowledge/.env`).
 
 ### 8.2 Critical Engineering Constraints
 1. **Tailwind CSS v4 Spacing Token Collision:**
@@ -842,11 +794,11 @@ PACKAGE ID: com.meme.capsule
 CURRENT ANDROID VERSION: v2.7 (versionCode 18)
 OFFICIAL WEBSITES: https://memecapsule.wtf (Web Platform) | https://meme-capsule-eww.pages.dev (Edge Backend)
 DEVELOPERS & LEADERSHIP:
-- Anmol Verma (anmolverma.env@gmail.com / GitHub: editorav010-dev)
+- Anmol Verma (GitHub: editorav010-dev)
   Lead Backend Developer: Full backend engineering, serverless architecture, core algorithms, AI tools, security, curation, and all admin systems.
-- Pratham Pandey (bbethical010@gmail.com / GitHub: bbethical010-glitch)
+- Pratham Pandey (GitHub: bbethical010-glitch)
   Lead Frontend Developer & Original Ideator: Founding concept, APK, web platform (memecapsule.wtf), app theme, typography, UI/UX, Java Android bridge, MediaStore integrations, client build setup.
-- Faraz Ahmed (thesplashsnize@gmail.com)
+- Faraz Ahmed
   Social Media & Marketing Lead: Social handles, content planning, niche analysis, scripting, quality control, and marketing campaigns.
 Official App Email (User Support & Marketing): support@memecapsule.wtf
 Social Media:
@@ -870,14 +822,14 @@ ECOSYSTEM STRUCTURE:
    - Core Features: Live Drop Simulator (5-drop quota + lockout bumper with Play Store UTM tracking), 3D interactive phone mockups (5 authentic WebP captures + lightbox zoom), Kage atmospheric UI (Preloader, CustomCursor, GrainOverlay, Vignette, ScrollRail), Acid Glitch mode (html.theme-glitch), Section 04.5 Under the Hood, /about Press Kit (copy kit & brand downloads), /privacy policy, Formspree contact form (xwlenwzr with privacy consent), Google AdSense unit meme1 (slot 6291908699, ca-pub-2093403233028868), and SEO/GEO (llms.txt, Schema.org).
 
 3. SERVERLESS EDGE BACKEND & INTERNAL WORKBENCHES (meme-capsule-eww.pages.dev - This Repo):
-   - Tech: Cloudflare Pages Functions, Cloudflare D1 (SQLite with 14 migrations), Cloudflare R2 (bucket memes, $0.00 egress).
+   - Tech: Cloudflare Pages Functions, Cloudflare D1 (SQLite with 13 migrations), Cloudflare R2 (bucket memes, $0.00 egress).
    - 3-Tier Status Partitioning (Migration 012):
      * curation_status = 'keep' (111 memes, status = 'active', is_active = 1) -> Live in public Capsule drops.
      * curation_status = 'excluded' (53 memes, status = 'archived', is_active = 0) -> Authoritatively rejected by Superadmin.
      * curation_status IS NULL (4,947 memes, status = 'archived', is_active = 0) -> Uncurated backlog.
      * Total Corpus: 5,111 memes.
    - Internal Tools (Neo-Brutalist dark theme #121212, Anton/Oswald fonts):
-     * /curate & /categorise: Multi-judge consensus curation with Layer 0 keyboard shortcuts (K, E, D, L), single-judge adoption & authoritative finality (POST /api/curate/approve), permanent force-remove (Shift+Delete / POST /api/curate/force-remove), and SuperAdmin conflict arbitration.
+     * /curate & /categorise: Multi-judge consensus curation with Layer 0 keyboard shortcuts (K, E, D, L) and SuperAdmin conflict arbitration.
      * /admin: 5-metric status bar (Total 5111, Active 111, Excluded 53, Archived 4947, Drafts 0), dedicated [EXCLUDED] filter tab, D1/R2 sync, SQL runner, analytics recalculation.
      * /reports: Token-gated moderation dashboard for user-flagged memes (archive / blacklist).
      * /ai-judge: Multimodal vision loop (Gemini Vision + NVIDIA NIM Llama 3.2 Vision runner) for pre-curation recommendations.
