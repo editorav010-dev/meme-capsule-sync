@@ -372,7 +372,14 @@ Registered on the Android WebView as `window.MemeCapsuleAndroid`:
     - 4 selectable Arcade FX styles: Classic, Retro Slam, Neon Glitch, Cassette Pop.
     - Drop Mode selector with niche filters next to HIT ME button.
 
-### 3.9 Mobile Safety, Reporting & Local Blocklist
+### 3.9 Mobile Safety, Age Verification (DOB) & Content Reporting
+- **First-Launch Date of Birth (DOB) Verification Modal (`DateOfBirthModal.tsx`):**
+  - Mandatory full-screen modal (`z-[2000]`) presented immediately upon the user's initial opening after downloading the app if `localStorage('meme_capsule_user_dob')` is unset.
+  - Non-bypassable: cannot be closed, skipped, or dismissed via backdrop click, Escape key, or Android hardware back navigation.
+  - Auto-advancing Neo-Brutalist DD / MM / YYYY numerical inputs with numeric keypad, coupled with an optional native Android DatePicker calendar dialog.
+  - Strict 18+ age validation: users under 18 years of age are blocked from entering.
+  - Single-entry locked: once submitted, the DOB is saved to `localStorage('meme_capsule_user_dob')` alongside `meme_capsule_dob_confirmed_at` and can never be re-input or edited.
+  - Displayed as a verified, locked badge in App Settings under "PRIVACY, LEGAL & ABOUT".
 - **Reporting Modal (`ReportModal.tsx`):** Users can report inappropriate content (`NSFW`, `Hate Speech`, `Harassment`, `Copyright`).
 - **Immediate Local Suppression:** Submitting a report triggers `POST /api/report` to Cloudflare Pages and immediately adds the meme ID to `localStorage('reported_memes')`. The client filtering loop (`fetchValidMeme()`) permanently drops reported memes from subsequent card drops.
 
