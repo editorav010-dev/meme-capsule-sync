@@ -33,9 +33,10 @@
    - 3.5 [Neo-Brutalist Viral Share Bottom Sheet & Social Dispatch System](#35-neo-brutalist-viral-share-bottom-sheet--social-dispatch-system)
    - 3.6 [Native Android Bridge & Scoped MediaStore Storage (`MainActivity.java`)](#36-native-android-bridge--scoped-mediastore-storage-mainactivityjava)
    - 3.7 [Meme Vault, Mood Boards ("Pinned Energy") & Offline Collections](#37-meme-vault-mood-boards-pinned-energy--offline-collections)
-   - 3.8 [Mobile Monetization (AdMob + Google Play In-App Purchases)](#38-mobile-monetization-admob--google-play-in-app-purchases)
-   - 3.9 [Mobile Safety, Reporting & Local Blocklist](#39-mobile-safety-reporting--local-blocklist)
-   - 3.10 [Critical Engineering Guardrails & Styling Gotchas (Tailwind v4)](#310-critical-engineering-guardrails--styling-gotchas-tailwind-v4)
+   - 3.8 [Mobile Monetization (AdMob + Google Play In-App Purchases & Neo-Brutalist Store)](#38-mobile-monetization-admob--google-play-in-app-purchases--neo-brutalist-store)
+   - 3.9 [Mobile Safety, Age Verification (DOB) & Content Reporting](#39-mobile-safety-age-verification-dob--content-reporting)
+   - 3.10 [Google Play Store In-App Rating & Review Engine (`RatingModal.tsx`)](#310-google-play-store-in-app-rating--review-engine-ratingmodaltsx)
+   - 3.11 [Critical Engineering Guardrails & Styling Gotchas (Tailwind v4)](#311-critical-engineering-guardrails--styling-gotchas-tailwind-v4)
 4. [PART B: PROMOTIONAL, PRESS & WEB PLATFORM (`memecapsule.wtf`)](#4-part-b-promotional-press--web-platform-memecapsulewtf)
    - 4.1 [Platform Architecture & Static HTML Prerendering](#41-platform-architecture--static-html-prerendering)
    - 4.2 [Interactive Live Drop Preview Simulator & Quota Lockout Bumper](#42-interactive-live-drop-preview-simulator--quota-lockout-bumper)
@@ -277,9 +278,11 @@ The mobile app rejects infinite feed algorithms. It is designed as an **Arcade V
 | **Targeted Sharing** | **Direct Social Intent Bridge** | `MainActivity.java` | `shareImageToApp()` targets specific package names (WhatsApp, Instagram, Facebook, X, Telegram, Discord) with automatic fallback to `Intent.createChooser`. |
 | **Collections** | **Meme Vault (Favorites)** | `src/App.tsx` | Searchable local gallery of saved memes with viewed/fetched/liked counters. Free tier limit: 20 memes (`FREE_VAULT_LIMIT = 20`); Pro tier: unlimited. |
 | **Themed Binders** | **Mood Boards ("Pinned Energy")** | `src/App.tsx`, `CreateBoardModal.tsx`, `UnpinModal.tsx` | Custom color-coded mood boards (`primary`, `secondary`, `tertiary`) with synchronized `meme_pinboard` + `meme_favorites` storage for reliable thumbnail rendering. |
-| **Settings & Privacy** | **Settings & History Erasure Page** | `src/App.tsx` (`activeTab === 'settings'`) | 4th bottom navigation tab & header gear shortcut consolidating **Privacy Policy (v1.1)** (removed from the face of Home/Vault/Mood Boards), **Local Device Footprint KPIs**, **Clear Past Viewing History & Stats**, **Empty Vault & Mood Boards**, **Unblock Reported Memes**, **Delete All App History & Data** (with 2-step confirmation), **Capsule Feed Toggles** (Hybrid Reddit Relay, 7-Meme Turbo Buffer, Card Shake Effects), **Pro Upgrade/Restore**, and **Replay Gesture Tour**. |
+| **Settings & Privacy** | **Settings & Legal Page** | `src/App.tsx` (`activeTab === 'settings'`) | 4th bottom navigation tab & header gear shortcut consolidating **Direct Privacy Policy Link (`https://memecapsule.wtf/privacy`)**, **Website CTA Button (`https://memecapsule.wtf`)**, **Official Support Email (`support@memecapsule.wtf`)** (creator name and social handles removed from UI), **Verified 18+ Age Badge**, **Play Store Rating Trigger**, **Local Device Footprint KPIs**, **Clear Past Viewing History & Stats**, **Empty Vault & Mood Boards**, **Unblock Reported Memes**, **Delete All App History & Data** (2-step confirmation), **Capsule Feed Toggles**, **Store & Theme Equipper**, and **Replay Gesture Tour**. |
+| **Age Verification** | **First-Launch Date of Birth Gate (18+)** | `src/components/DateOfBirthModal.tsx` | Non-bypassable mandatory modal (`z-[2000]`) presented immediately **after the Onboarding Guide** on first app launch before entering the deck. DD/MM/YYYY numeric inputs + native DatePicker, strict 18+ age validation, locked to `localStorage('meme_capsule_user_dob')`. |
+| **Play Store Rating** | **In-App Rating & Review Engine** | `src/components/RatingModal.tsx` & `src/App.tsx` | Neo-Brutalist 5-star reaction popup (`GOD-TIER DANKNESS!`, `CERTIFIED BANGERS!`) triggered after viewed meme intervals. Redirects to Google Play Store listing (`market://details?id=com.meme.capsule` / `openPlayStoreListing`), provides **24-hour snooze deferral**, and permanently suppresses once submitted. |
 | **Safety & UGC** | **Content Reporting & Blocklist** | `src/ReportModal.tsx` & `src/App.tsx` | Store-compliant reporting modal (`POST /api/report`). Reported memes are written to `localStorage('reported_memes')` and permanently filtered out of rotation. |
-| **Monetization** | **AdMob + In-App Purchase (PRO)** | `src/ProUpgradeModal.tsx` & `src/App.tsx` | Interstitial ads every 4th meme + Rewarded ads for bonus drops (`@capacitor-community/admob`). One-time Pro upgrade (`remove_ads_forever` via `@capgo/native-purchases`) unlocks Zero Ads, Unlimited Vault, and permanent Triple Drop. |
+| **Monetization & Store** | **In-App Capsule Store & AdMob** | `src/components/store/`, `billing.ts`, `entitlements.ts` | Clash of Clans horizontal snap-scrolling store (`snap-x snap-mandatory`), sticky category tabs, 11 single unlocks + 5 bundles, live dynamic savings badges, 8s theme preview, celebratory slam animation, and **QA Testing Mode** (fallback reference pricing, simulated test purchase, and 1-tap entitlement reset). Non-intrusive AdMob interstitial every 4th meme (suppressed if `hasAdsRemoved()`). |
 
 ### 3.4 Card Deck, Gestures & Instant-Touch Overlay Architecture
 The card deck is orchestrated by `MemeStack.tsx` using `@react-spring/web` and `@use-gesture/react`:
@@ -384,7 +387,33 @@ Registered on the Android WebView as `window.MemeCapsuleAndroid`:
 - **Reporting Modal (`ReportModal.tsx`):** Users can report inappropriate content (`NSFW`, `Hate Speech`, `Harassment`, `Copyright`).
 - **Immediate Local Suppression:** Submitting a report triggers `POST /api/report` to Cloudflare Pages and immediately adds the meme ID to `localStorage('reported_memes')`. The client filtering loop (`fetchValidMeme()`) permanently drops reported memes from subsequent card drops.
 
-### 3.10 Critical Engineering Guardrails & Styling Gotchas (Tailwind v4)
+### 3.10 Google Play Store In-App Rating & Review Engine (`RatingModal.tsx`)
+To drive organic Google Play Store reviews while honoring the app's Neo-Brutalist design language and respectful UX philosophy:
+- **Eligibility & Periodic Trigger Logic (`checkRatingPromptEligibility` in `src/App.tsx`):**
+  - Evaluated on card deck transitions (`totalMemesViewed`).
+  - **Suppression Gates:** Suppressed permanently if feedback was already registered (`localStorage('meme_capsule_rating_completed') === 'true'`).
+  - **Active Session Safety:** Never opens while other modals are active (Onboarding, DOB gate, Report modal, Unpin dialog, Mood board composer, Store overlay, or active Rewarded Ad).
+  - **Snooze Check:** Suppressed if the user deferred within the past 24 hours (`localStorage('meme_capsule_rating_deferred_until') > Date.now()`).
+  - Triggers after an initial viewing threshold (e.g. 15 memes) and periodically re-checks at spaced intervals.
+- **Neo-Brutalist Visual Design:**
+  - Strict palette adherence: background `#1c1b1b` / `#131313`, gold border `#f4c300`, solid offset shadow (`shadow-[8px_8px_0px_0px_#f4c300]`), zero border radius, Anton & Oswald typography.
+  - Interactive 5-star reaction selector with dynamic feedback badges:
+    - 5 Stars: `GOD-TIER DANKNESS! 🔥` (`#FACC15`)
+    - 4 Stars: `CERTIFIED BANGERS! ⚡` (`#00E5FF`)
+    - 3 Stars: `SOLID CHUCKLES 👌` (`#34C759`)
+    - 2 Stars: `NEEDS MORE SPICE 🫠` (`#FF9800`)
+    - 1 Star: `MID CORP SLOP 💀` (`#FF3B30`)
+- **Direct Play Store Dispatch (`redirectToPlayStore`):**
+  - First attempts to call the native Java bridge: `window.MemeCapsuleAndroid.openPlayStoreListing()`.
+  - Automatically falls back to opening `https://play.google.com/store/apps/details?id=com.meme.capsule` via `window.open` with `noopener,noreferrer`.
+- **24-Hour Snooze Deferral:**
+  - Clicking `[X]` or `SNOOZE 24H (REMIND ME LATER)` invokes `handleDeferRating()`, setting `meme_capsule_rating_deferred_until = Date.now() + 86400000` and displaying a Neo-Brutalist confirmation toast (`RATING SNOOZED FOR 24 HOURS ⏰`).
+- **Permanent Dismissal:**
+  - Once the user rates the app or registers feedback, `meme_capsule_rating_completed` is set to `'true'` in `localStorage`. The rating prompt will NEVER display automatically again.
+- **On-Demand Settings Action:**
+  - Users can manually access the rating modal at any time via the "RATE ON PLAY STORE" button on the Settings screen.
+
+### 3.11 Critical Engineering Guardrails & Styling Gotchas (Tailwind v4)
 1. **Tailwind CSS v4 `@theme` Spacing Token Gotcha (`src/index.css`):**
    - `src/index.css` defines custom spacing tokens (`--spacing-xs: 8px`, `--spacing-sm: 16px`, `--spacing-md: 24px`, `--spacing-lg: 40px`, `--spacing-xl: 64px`).
    - In Tailwind CSS v4, utility classes like `max-w-md` or `max-w-sm` resolve to `var(--spacing-md)` (`24px`) and `var(--spacing-sm)` (`16px`).
