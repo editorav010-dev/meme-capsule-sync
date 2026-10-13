@@ -268,21 +268,21 @@ The mobile app rejects infinite feed algorithms. It is designed as an **Arcade V
 
 | Feature Category | Feature | Implementation Component | Technical Description & Behavior |
 | :--- | :--- | :--- | :--- |
-| **Core Dispenser** | **Hero Landing (`HIT ME`)** | `src/App.tsx` | Dominant Neo-Brutalist `HIT ME` button with pulsing glow aura, compact secondary actions (`BONUS DROP` & `TRIPLE DROP`), and header Streak & Settings shortcut badges. |
+| **Core Dispenser** | **Hero Landing (`HIT ME`)** | `src/App.tsx` | Dominant, hyper-focused Neo-Brutalist `HIT ME` button with pulsing glow aura. All extra cluttered CTA buttons (`BONUS DROP`, `TRIPLE DROP`, `RewardPacks` ad-unlock packs) permanently removed to ensure zero-friction, distraction-free landing. |
 | **Feed Pipeline** | **7-Meme FIFO Prefetch Buffer** | `src/App.tsx` | Maintains an in-memory queue of 7 preloaded memes (`PIPELINE_TARGET_SIZE = 7`) for instant card swiping with zero delay. |
 | **Feed Sourcing** | **Hybrid D1/R2 + SFW Reddit** | `src/App.tsx` | Fetches curated memes from Cloudflare D1/R2 (`/api/random-meme`) and alternates every 3rd fetch (`totalMemesViewed % 3 === 0`) with Reddit (`meme-api.com/gimme`), strictly dropping NSFW and spoilers. |
-| **Card Deck** | **4-Card 3D Perspective Stack** | `src/components/MemeStack.tsx` & `MemeCard.tsx` | Spring-physics 4-card stack powered by `@react-spring/web` and `@use-gesture/react`. Supports Swipe Right (`keep`), Swipe Left (`skip`), Swipe Up (`save`), Double-Tap (`DANK!` shake), and Long-Press (600ms gallery download). |
+| **Card Deck** | **4-Card 3D Perspective Stack** | `src/components/MemeStack.tsx` & `MemeCard.tsx` | Spring-physics 4-card stack powered by `@react-spring/web` and `@use-gesture/react`. Removed the competing top header bar (`MEME CAPSULE` title and `GO PRO` promotion) during feed viewing, providing visually quiet, edge-to-edge content immersion (Reels-style where the meme is the singular hero) with top safe-area breathing room. Supports Swipe Right (`keep`), Swipe Left (`skip`), Swipe Up (`save`), Double-Tap (`DANK!` shake), and Long-Press (600ms gallery download). |
 | **Card Overlay** | **Instant-Touch Overlay Buttons** | `src/components/MemeCard.tsx` | Top-right `38px × 38px` Download & Share buttons executing on `onPointerDown`/`onTouchStart` with debounce timestamp guard and `pointer-events-none` on SVG icons; bottom-right `34px × 34px` Report button. |
 | **Card Actions** | **4-Button Neo-Brutalist CTA Bar** | `src/App.tsx` | Main action bar below card: **LIKE**, **VAULT**, **PIN**, and **SHARE**. |
 | **Viral Sharing** | **Neo-Brutalist Share Bottom Sheet** | `src/ShareModal.tsx` & `MainActivity.java` | Custom bottom sheet with live thumbnail preview (`PAYLOAD ATTACHED`), **Auto-Attached Promotional Message** with Google Play link, **6 Animated Social Media SVG Logos**, **`QUICKSHARE`**, **`MORE OPTIONS`** (#FF8C00 native chooser), and **`COPY TO CLIPBOARD`**. |
 | **Native Storage** | **Scoped MediaStore Image Saving** | `MainActivity.java` | Streams media directly to `Pictures/Meme Capsule` via Android 10+ `MediaStore.Images.Media` (`IS_PENDING` atomic write, zero runtime permissions). |
 | **Targeted Sharing** | **Direct Social Intent Bridge** | `MainActivity.java` | `shareImageToApp()` targets specific package names (WhatsApp, Instagram, Facebook, X, Telegram, Discord) with automatic fallback to `Intent.createChooser`. |
 | **Collections** | **Meme Vault (Favorites)** | `src/App.tsx` | Searchable local gallery of saved memes with viewed/fetched/liked counters. Free tier limit: 20 memes (`FREE_VAULT_LIMIT = 20`); Pro tier: unlimited. |
-| **Themed Binders** | **Mood Boards ("Pinned Energy")** | `src/App.tsx`, `CreateBoardModal.tsx`, `UnpinModal.tsx` | Custom color-coded mood boards (`primary`, `secondary`, `tertiary`) with synchronized `meme_pinboard` + `meme_favorites` storage for reliable thumbnail rendering. |
+| **Themed Binders** | **Mood Boards ("Pinned Energy")** | `src/App.tsx`, `CreateBoardModal.tsx`, `UnpinModal.tsx` | Custom color-coded mood boards (`primary`, `secondary`, `tertiary`) with synchronized `meme_pinboard` + `meme_favorites` storage for reliable thumbnail rendering. Free tier limit increased to 7 custom Mood Boards (`FREE_BOARD_LIMIT = 7`) to foster habit building before monetization. |
 | **Settings & Privacy** | **Settings & Legal Page** | `src/App.tsx` (`activeTab === 'settings'`) | 4th bottom navigation tab & header gear shortcut consolidating **Direct Privacy Policy Link (`https://memecapsule.wtf/privacy`)**, **Website CTA Button (`https://memecapsule.wtf`)**, **Official Support Email (`support@memecapsule.wtf`)** (creator name and social handles removed from UI), **Verified 18+ Age Badge**, **Play Store Rating Trigger**, **Local Device Footprint KPIs**, **Clear Past Viewing History & Stats**, **Empty Vault & Mood Boards**, **Unblock Reported Memes**, **Delete All App History & Data** (2-step confirmation), **Capsule Feed Toggles**, **Store & Theme Equipper**, and **Replay Gesture Tour**. |
 | **Age Verification** | **First-Launch Date of Birth Gate (18+)** | `src/components/DateOfBirthModal.tsx` | Non-bypassable mandatory modal (`z-[2000]`) presented immediately **after the Onboarding Guide** on first app launch before entering the deck. DD/MM/YYYY numeric inputs + native DatePicker, strict 18+ age validation, locked to `localStorage('meme_capsule_user_dob')`. |
 | **Play Store Rating** | **In-App Rating & Review Engine** | `src/components/RatingModal.tsx` & `src/App.tsx` | Neo-Brutalist 5-star reaction popup (`GOD-TIER DANKNESS!`, `CERTIFIED BANGERS!`) triggered after viewed meme intervals. Redirects to Google Play Store listing (`market://details?id=com.meme.capsule` / `openPlayStoreListing`), provides **24-hour snooze deferral**, and permanently suppresses once submitted. |
-| **Safety & UGC** | **Content Reporting & Blocklist** | `src/ReportModal.tsx` & `src/App.tsx` | Store-compliant reporting modal (`POST /api/report`). Reported memes are written to `localStorage('reported_memes')` and permanently filtered out of rotation. |
+| **Safety & UGC** | **Content Reporting & Blocklist** | `src/ReportModal.tsx` & `src/App.tsx` | Store-compliant reporting modal (`ReportModal.tsx`) upgraded with refined typography hierarchy (Grotesque sans `Chivo` / `font-body-md`, regular case reason descriptions, and relaxed leading) and client suppression (`POST /api/report`). Reported memes are written to `localStorage('reported_memes')` and permanently filtered out of rotation. |
 | **Monetization & Store** | **In-App Capsule Store & AdMob** | `src/components/store/`, `billing.ts`, `entitlements.ts` | Clash of Clans horizontal snap-scrolling store (`snap-x snap-mandatory`), sticky category tabs, 11 single unlocks + 5 bundles, live dynamic savings badges, 8s theme preview, celebratory slam animation, and **QA Testing Mode** (fallback reference pricing, simulated test purchase, and 1-tap entitlement reset). Non-intrusive AdMob interstitial every 4th meme (suppressed if `hasAdsRemoved()`). |
 
 ### 3.4 Card Deck, Gestures & Instant-Touch Overlay Architecture
@@ -297,6 +297,13 @@ The card deck is orchestrated by `MemeStack.tsx` using `@react-spring/web` and `
 - **Instant-Touch Overlay Buttons (`MemeCard.tsx`):**
   - Because `MemeStack` attaches gesture handlers to the card with `touch-action: none`, standard click events can be swallowed during drag initiation.
   - The top-right `38px × 38px` Download & Share buttons and the bottom-right `34px × 34px` Report button execute on `onPointerDown` / `onTouchStart` with a `useRef` timestamp guard (250ms debounce) and `pointer-events-none` on inner SVG icons so touches register on the very first contact.
+- **Edge-to-Edge Visually Quiet Content Deck (Zero Feed Distraction):**
+  - Following the Instagram Reels design philosophy where the content is the absolute hero, the top header bar (`MEME CAPSULE` title, streak counters, and `GO PRO` promotional banner) was completely removed while viewing memes on the feed.
+  - The deck is cushioned with top safe-area insets (`pt-[max(env(safe-area-inset-top),16px)]`) providing serene, breathing negative space without commercial distraction.
+  - System settings and account configurations are accessed cleanly from the dedicated 4th tab in the bottom dock (`nav`), completely separating content viewing from system navigation.
+- **Distraction-Free Landing Screen:**
+  - Removed all secondary ad-unlock actions (`BONUS DROP`, `TRIPLE DROP`, `RewardPacks`) from the home waiting state (`screen === 'waiting'`). The user is greeted exclusively by the hero `HIT ME` button.
+  - Removed the `⚡ WATCH AD / 30 MIN AD-FREE` promotional button from the meme card's `#moreMenu` popover.
 
 ### 3.5 Neo-Brutalist Viral Share Bottom Sheet & Social Dispatch System
 When the user taps Share (from the card overlay, bottom CTA bar, Meme Vault, or Mood Boards), the app opens `ShareModal.tsx`:
@@ -334,13 +341,13 @@ Registered on the Android WebView as `window.MemeCapsuleAndroid`:
 
 ### 3.7 Meme Vault, Mood Boards ("Pinned Energy") & Offline Collections
 - **Meme Vault:** Persistent offline favorites list stored in `localStorage('meme_favorites')` with instant client-side search. Free tier users can save up to 20 memes (`FREE_VAULT_LIMIT = 20`); Pro users have unlimited storage.
-- **Mood Boards ("Pinned Energy"):** Color-coded thematic binders (`primary`, `secondary`, `tertiary`) created via `CreateBoardModal.tsx`.
+- **Mood Boards ("Pinned Energy"):** Color-coded thematic binders (`primary`, `secondary`, `tertiary`) created via `CreateBoardModal.tsx`. Free tier limit is 7 custom Mood Boards (`FREE_BOARD_LIMIT = 7` in `rewards.ts`, `entitlements.ts`, and `App.tsx`) to encourage daily habit building before monetization.
 - **Pinboard Synchronization:** When a meme is pinned to a board, the system synchronizes both `meme_pinboard` and `meme_favorites` records to guarantee that pinned meme thumbnails always render reliably even if the meme was not previously saved to the main vault.
 
 ### 3.8 Mobile Monetization (AdMob + Google Play In-App Purchases & Neo-Brutalist Store)
 - **Google AdMob:**
   - Non-intrusive full-screen interstitial ad displayed every 4th meme viewed via `@capacitor-community/admob`. Suppressed permanently if `hasAdsRemoved()`.
-  - Rewarded ads allow users to unlock optional bonus drops or temporary +1 session Mood Board slots. Rewarded ads remain fully optional even for users who purchased No Ads.
+  - Rewarded ads allow users to unlock optional bonus drops or temporary +1 session Mood Board slots. Rewarded ads remain fully optional even for users who purchased No Ads. Extra promotional clutter on the home screen and meme menu has been removed for a clean, respectful UX.
 - **Neo-Brutalist In-App Capsule Store (`src/components/store/`):**
   - Full-screen game-style overlay opened via `openStore({ focus?: ProductId })`.
   - **Clash of Clans Horizontal Game Store Architecture:**
@@ -350,7 +357,7 @@ Registered on the Android WebView as `window.MemeCapsuleAndroid`:
   - **QA Testing Mode & Free Feature Verification:**
     - Reference pricing fallback (`FALLBACK_PRODUCTS` in `billing.ts`): ensures prices are always formatted and displayed (`₹149`, `₹79`, etc.) on sideloaded APKs or test environments without requiring live Play Console activation.
     - Simulated test unlock (`testPurchase(productId)`): allows immediate testing of all paid unlocks and bundle celebrations without Google Play Billing errors.
-    - Free tier reset (`resetTestPurchases()`): one-tap button wipes all entitlements so testers can verify 100% of the free experience (Mood Boards 3-cap, default theme, classic FX, ads).
+    - Free tier reset (`resetTestPurchases()`): one-tap button wipes all entitlements so testers can verify 100% of the free experience (Mood Boards 7-cap, default theme, classic FX, ads).
     - Rewarded ad fallback in `App.tsx`: ensures testing the free Mood Board +1 session slot works reliably even if native AdMob test video fill is unavailable.
   - Catalog (`src/monetization/catalog.ts`): Single source of truth containing 11 single unlocks and 5 bundles:
     - **Single Unlocks:** `remove_ads_forever` (NO ADS), `unlimited_mood_boards` (BOARD BOSS), `fx_arcade_pack` (ARCADE FX), 4 colour themes (`theme_cyberpunk_cyan`, `theme_acid_green`, `theme_midnight_gold`, `theme_blood_orange`), and 4 drop mode packs (`pack_dark_humour`, `pack_wholesome`, `pack_desi`, `pack_gaming` - marked `available: false` / COMING SOON pending backend category endpoint).
@@ -421,6 +428,16 @@ To drive organic Google Play Store reviews while honoring the app's Neo-Brutalis
    - **MANDATORY RULE:** Always use explicit pixel values (e.g., `max-w-[460px]`, `max-w-[500px]`, or inline `style={{ width: '100%', maxWidth: '460px' }}`) for modal and container widths rather than `max-w-md` or `max-w-sm`.
 2. **Touch Events in Draggable Cards:** Always use `onPointerDown`/`onTouchStart` with debounce timestamp guards and `pointer-events-none` on SVG icons for overlay action buttons.
 3. **Android Build Commands:** Run `npm run lint` (`tsc --noEmit`), then `npm run build:android`, followed by `cd android && ./gradlew assembleDebug`.
+4. **Typography Hierarchy Standards:**
+   - Condensed uppercase display fonts (`Anton` / `font-headline-*` and `Oswald` / `font-label-*`) are strictly reserved for titles, card headers, CTA buttons, badges, and counters.
+   - For lengthy descriptions, report explanations (`ReportModal.tsx`), disclaimers, textareas, and body copy, always use readable grotesque sans (`Chivo` / `font-body-md` / `font-sans`) with natural mixed casing (`normal-case`), relaxed leading (`leading-relaxed`), and legible font sizing (`text-[13px]` to `text-[14px]`).
+5. **Android Dark Mode Text Inversion & WebView Force Dark Suppression:**
+   - On Android devices with system Dark Mode active, Android WebView can activate algorithmic darkening, inverting light text (`#e5e2e1`) on dark backgrounds (`#131313`) into unreadable muddy dark gray.
+   - Complete architectural solution:
+     - HTML root: `<meta name="color-scheme" content="dark" />` and inline `style="color-scheme: dark;"` in `index.html`.
+     - CSS root: `color-scheme: dark;` applied to `:root`, `html`, and `body` in `src/index.css`.
+     - Android Theme: Parent theme set to `Theme.AppCompat.NoActionBar` instead of `DayNight` in `styles.xml`.
+     - Native WebView: Explicitly disabling WebView force darkening via `webSettings.setForceDark(WebSettings.FORCE_DARK_OFF)` (API 29+) and `webSettings.setAlgorithmicDarkeningAllowed(false)` (API 33+) in `MainActivity.java`.
 
 ---
 
