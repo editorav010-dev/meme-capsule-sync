@@ -329,6 +329,7 @@ Registered on the Android WebView as `window.MemeCapsuleAndroid`:
   - Automatically appends unique timestamp hashes to prevent MediaStore file collision crashes.
   - Safe UI thread invocation for toast notifications preventing Activity lifecycle leaks or crashes.
   - Enabled `android:usesCleartextTraffic="true"` and `android:requestLegacyExternalStorage="true"` in `AndroidManifest.xml` to prevent HTTP network traffic crashes on Android 9+ and legacy storage exceptions.
+  - **WebView Crash & Blank Screen Prevention:** Wrapped native `WebSettings` and JS interface attachment in defensive try-catch guards. Avoided intrusive `setForceDark(FORCE_DARK_OFF)` and `setAlgorithmicDarkeningAllowed(false)` calls that destabilize or blank WebView rendering pipelines across differing Android OS versions.
 - **`shareImage(String url, String fileName, String title)`**:
   - Formats `title` using `buildShareMessage(title)` so the Play Store link is always included, caches the image in `getCacheDir()/shared_images/` via `FileProvider`, and opens the native share chooser.
 - **`shareImageToApp(String url, String fileName, String shareText, String targetPackage)`**:
@@ -425,6 +426,8 @@ To drive organic Google Play Store reviews while honoring the app's Neo-Brutalis
    - **MANDATORY RULE:** Always use explicit pixel values (e.g., `max-w-[460px]`, `max-w-[500px]`, or inline `style={{ width: '100%', maxWidth: '460px' }}`) for modal and container widths rather than `max-w-md` or `max-w-sm`.
 2. **Touch Events in Draggable Cards:** Always use `onPointerDown`/`onTouchStart` with debounce timestamp guards and `pointer-events-none` on SVG icons for overlay action buttons.
 3. **Android Build Commands:** Run `npm run lint` (`tsc --noEmit`), then `npm run build:android`, followed by `cd android && ./gradlew assembleDebug`.
+4. **Startup Error Boundary & Blank Screen Prevention (`src/main.tsx`):** All top-level React rendering is shielded by a Neo-Brutalist `ErrorBoundary` and global window unhandled error/rejection listeners. This prevents React unmounting crashes from leaving a blank screen on physical devices, providing an instant user recovery action (`RELOAD CAPSULE`).
+5. **Android Styles & Theme Architecture (`styles.xml`):** Employs `Theme.AppCompat.DayNight.NoActionBar` as parent theme to ensure Capacitor and AndroidX DayNight attribute compatibility while keeping window backgrounds, status bars, and navigation bars solidly locked to `#131313`.
 
 ---
 
@@ -826,7 +829,7 @@ ECOSYSTEM STRUCTURE:
    - Top-Left Header & Settings Dismissal: Removed the leaf/seed badge (🌱 1) from the top-left header and replaced it with a redesigned Neo-Brutalist Settings icon button (#1c1c1e / #A855F7, 2px solid #000, 2.5px 2.5px 0px #000). Replaced the redundant large gear square on the top right of APP SETTINGS with a Neo-Brutalist [X] Close Button, and enabled top-left header re-tap toggle, backdrop tap-to-dismiss, and Android hardware back dismissal.
    - Viral Sharing: Persistent Share Sheet Ribbon sits 100% flush (0px breathing space) on the top border of the 3-tab bottom navigation dock (bottom: calc(60px + max(env(safe-area-inset-bottom, 0px), 16px))). Expands smoothly over 320ms cubic-bezier(0.16, 1, 0.3, 1) from behind the dock, supports Instagram-style 0-latency 1:1 finger drag-to-dismiss (26% height / 0.5px/ms velocity threshold), and removes both the 5 technical/debug labels and the visible dark promotional text preview box from the frontend while preserving 100% of the promotional message + Play Store link payload on clipboard and share intents.
    - Native Java: MainActivity.java injects "window.MemeCapsuleAndroid" for Scoped MediaStore gallery saving (Pictures/Meme Capsule), Play Store listing intent (openPlayStoreListing), and targeted intent sharing (shareImageToApp).
-   - Collections, Settings & Monetization: Meme Vault (free limit 20, Pro unlimited), Mood Boards, dedicated Settings & History page (Privacy Policy v1.1, 4 granular history/data erasure controls, feed/buffer/shake toggles), AdMob interstitials (every 4th drop), In-App Purchase (₹99 remove_ads_forever).
+   - Collections, Settings & Monetization: Meme Vault (free limit 100, Pro unlimited), Mood Boards (free limit 7, Pro unlimited), dedicated Settings & History page (Privacy Policy v1.1, 4 granular history/data erasure controls, feed/buffer/shake toggles), AdMob interstitials (every 4th drop), In-App Purchase (Google Play Billing store with Clash of Clans lateral layout, ₹99/₹149/₹299/₹449 packs).
 
 2. PUBLIC WEB PLATFORM (memecapsule.wtf):
    - Tech: React 18, Vite 5, Tailwind CSS v3, React Router DOM v6, static HTML prerendering (vite-plugin-prerender with ReactSSRRenderer) on GitHub Pages.
