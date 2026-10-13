@@ -277,7 +277,7 @@ The mobile app rejects infinite feed algorithms. It is designed as an **Arcade V
 | **Viral Sharing** | **Neo-Brutalist Share Bottom Sheet** | `src/ShareModal.tsx` & `MainActivity.java` | Custom bottom sheet with live thumbnail preview (`PAYLOAD ATTACHED`), **Auto-Attached Promotional Message** with Google Play link, **6 Animated Social Media SVG Logos**, **`QUICKSHARE`**, **`MORE OPTIONS`** (#FF8C00 native chooser), and **`COPY TO CLIPBOARD`**. |
 | **Native Storage** | **Scoped MediaStore Image Saving** | `MainActivity.java` | Streams media directly to `Pictures/Meme Capsule` via Android 10+ `MediaStore.Images.Media` (`IS_PENDING` atomic write, zero runtime permissions). |
 | **Targeted Sharing** | **Direct Social Intent Bridge** | `MainActivity.java` | `shareImageToApp()` targets specific package names (WhatsApp, Instagram, Facebook, X, Telegram, Discord) with automatic fallback to `Intent.createChooser`. |
-| **Collections** | **Meme Vault (Favorites)** | `src/App.tsx` | Searchable local gallery of saved memes with viewed/fetched/liked counters. Free tier limit: 20 memes (`FREE_VAULT_LIMIT = 20`); Pro tier: unlimited. |
+| **Collections** | **Meme Vault (Favorites)** | `src/App.tsx` | Searchable local gallery of saved memes with viewed/fetched/liked counters. Free tier limit: 100 memes (`FREE_VAULT_LIMIT = 100`); Pro tier: unlimited. |
 | **Themed Binders** | **Mood Boards ("Pinned Energy")** | `src/App.tsx`, `CreateBoardModal.tsx`, `UnpinModal.tsx` | Custom color-coded mood boards (`primary`, `secondary`, `tertiary`) with synchronized `meme_pinboard` + `meme_favorites` storage for reliable thumbnail rendering. |
 | **Settings & Privacy** | **Settings & Legal Page** | `src/App.tsx` (`activeTab === 'settings'`) | 4th bottom navigation tab & header gear shortcut consolidating **Direct Privacy Policy Link (`https://memecapsule.wtf/privacy`)**, **Website CTA Button (`https://memecapsule.wtf`)**, **Official Support Email (`support@memecapsule.wtf`)** (creator name and social handles removed from UI), **Verified 18+ Age Badge**, **Play Store Rating Trigger**, **Local Device Footprint KPIs**, **Clear Past Viewing History & Stats**, **Empty Vault & Mood Boards**, **Unblock Reported Memes**, **Delete All App History & Data** (2-step confirmation), **Capsule Feed Toggles**, **Store & Theme Equipper**, and **Replay Gesture Tour**. |
 | **Age Verification** | **First-Launch Date of Birth Gate (18+)** | `src/components/DateOfBirthModal.tsx` | Non-bypassable mandatory modal (`z-[2000]`) presented immediately **after the Onboarding Guide** on first app launch before entering the deck. DD/MM/YYYY numeric inputs + native DatePicker, strict 18+ age validation, locked to `localStorage('meme_capsule_user_dob')`. |
@@ -324,7 +324,11 @@ When the user taps Share (from the card overlay, bottom CTA bar, Meme Vault, or 
 ### 3.6 Native Android Bridge & Scoped MediaStore Storage (`MainActivity.java`)
 Registered on the Android WebView as `window.MemeCapsuleAndroid`:
 - **`downloadImage(String url, String fileName)`**:
-  - Streams the image on a background thread into `Pictures/Meme Capsule` via Android 10+ `MediaStore.Images.Media` (`IS_PENDING` atomic write), eliminating the need for legacy storage permissions on modern Android devices.
+  - Crash-proof background worker downloading images directly into `Pictures/Meme Capsule/` via Android 10+ MediaStore (`IS_PENDING` atomic write, safe cleanup guards, and proper trailing slash relative path).
+  - Handles HTTP 301/302/307/308 redirect chains seamlessly and presents a valid browser User-Agent to prevent CDN/Reddit 403 and 429 blocks.
+  - Automatically appends unique timestamp hashes to prevent MediaStore file collision crashes.
+  - Safe UI thread invocation for toast notifications preventing Activity lifecycle leaks or crashes.
+  - Enabled `android:usesCleartextTraffic="true"` and `android:requestLegacyExternalStorage="true"` in `AndroidManifest.xml` to prevent HTTP network traffic crashes on Android 9+ and legacy storage exceptions.
 - **`shareImage(String url, String fileName, String title)`**:
   - Formats `title` using `buildShareMessage(title)` so the Play Store link is always included, caches the image in `getCacheDir()/shared_images/` via `FileProvider`, and opens the native share chooser.
 - **`shareImageToApp(String url, String fileName, String shareText, String targetPackage)`**:
@@ -333,7 +337,7 @@ Registered on the Android WebView as `window.MemeCapsuleAndroid`:
   - Supported package queries are declared in `AndroidManifest.xml` (`<queries>` for WhatsApp, Instagram, Facebook, Twitter, Telegram, Discord).
 
 ### 3.7 Meme Vault, Mood Boards ("Pinned Energy") & Offline Collections
-- **Meme Vault:** Persistent offline favorites list stored in `localStorage('meme_favorites')` with instant client-side search. Free tier users can save up to 20 memes (`FREE_VAULT_LIMIT = 20`); Pro users have unlimited storage.
+- **Meme Vault:** Persistent offline favorites list stored in `localStorage('meme_favorites')` with instant client-side search. Free tier users can save up to 100 memes (`FREE_VAULT_LIMIT = 100`); Pro users have unlimited storage.
 - **Mood Boards ("Pinned Energy"):** Color-coded thematic binders (`primary`, `secondary`, `tertiary`) created via `CreateBoardModal.tsx`.
 - **Pinboard Synchronization:** When a meme is pinned to a board, the system synchronizes both `meme_pinboard` and `meme_favorites` records to guarantee that pinned meme thumbnails always render reliably even if the meme was not previously saved to the main vault.
 
