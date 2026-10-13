@@ -15,7 +15,7 @@
 > **Official App Email (User Support & Marketing):** `support@memecapsule.wtf`  
 > **Official Social Media:**  
 > Instagram: https://www.instagram.com/capsule.meme/ | X: https://x.com/memecapsule_ | Threads: https://www.threads.com/@capsule.meme  
-> **Last Master Synchronization:** October 13, 2026   
+> **Last Master Synchronization:** September 26, 2026   
 
 ---
 
@@ -268,21 +268,21 @@ The mobile app rejects infinite feed algorithms. It is designed as an **Arcade V
 
 | Feature Category | Feature | Implementation Component | Technical Description & Behavior |
 | :--- | :--- | :--- | :--- |
-| **Core Dispenser** | **Hero Landing (`HIT ME`)** | `src/App.tsx` | Dominant, hyper-focused Neo-Brutalist `HIT ME` button with pulsing glow aura. All extra cluttered CTA buttons (`BONUS DROP`, `TRIPLE DROP`, `RewardPacks` ad-unlock packs) permanently removed to ensure zero-friction, distraction-free landing. |
+| **Core Dispenser** | **Hero Landing (`HIT ME`)** | `src/App.tsx` | Dominant Neo-Brutalist `HIT ME` button with pulsing glow aura, compact secondary actions (`BONUS DROP` & `TRIPLE DROP`), and header Streak & Settings shortcut badges. |
 | **Feed Pipeline** | **7-Meme FIFO Prefetch Buffer** | `src/App.tsx` | Maintains an in-memory queue of 7 preloaded memes (`PIPELINE_TARGET_SIZE = 7`) for instant card swiping with zero delay. |
 | **Feed Sourcing** | **Hybrid D1/R2 + SFW Reddit** | `src/App.tsx` | Fetches curated memes from Cloudflare D1/R2 (`/api/random-meme`) and alternates every 3rd fetch (`totalMemesViewed % 3 === 0`) with Reddit (`meme-api.com/gimme`), strictly dropping NSFW and spoilers. |
-| **Card Deck** | **4-Card 3D Perspective Stack** | `src/components/MemeStack.tsx` & `MemeCard.tsx` | Spring-physics 4-card stack powered by `@react-spring/web` and `@use-gesture/react`. Removed the competing top header bar (`MEME CAPSULE` title and `GO PRO` promotion) during feed viewing, providing visually quiet, edge-to-edge content immersion (Reels-style where the meme is the singular hero) with top safe-area breathing room. Supports Swipe Right (`keep`), Swipe Left (`skip`), Swipe Up (`save`), Double-Tap (`DANK!` shake), and Long-Press (600ms gallery download). |
+| **Card Deck** | **4-Card 3D Perspective Stack** | `src/components/MemeStack.tsx` & `MemeCard.tsx` | Spring-physics 4-card stack powered by `@react-spring/web` and `@use-gesture/react`. Supports Swipe Right (`keep`), Swipe Left (`skip`), Swipe Up (`save`), Double-Tap (`DANK!` shake), and Long-Press (600ms gallery download). |
 | **Card Overlay** | **Instant-Touch Overlay Buttons** | `src/components/MemeCard.tsx` | Top-right `38px × 38px` Download & Share buttons executing on `onPointerDown`/`onTouchStart` with debounce timestamp guard and `pointer-events-none` on SVG icons; bottom-right `34px × 34px` Report button. |
 | **Card Actions** | **4-Button Neo-Brutalist CTA Bar** | `src/App.tsx` | Main action bar below card: **LIKE**, **VAULT**, **PIN**, and **SHARE**. |
 | **Viral Sharing** | **Neo-Brutalist Share Bottom Sheet** | `src/ShareModal.tsx` & `MainActivity.java` | Custom bottom sheet with live thumbnail preview (`PAYLOAD ATTACHED`), **Auto-Attached Promotional Message** with Google Play link, **6 Animated Social Media SVG Logos**, **`QUICKSHARE`**, **`MORE OPTIONS`** (#FF8C00 native chooser), and **`COPY TO CLIPBOARD`**. |
 | **Native Storage** | **Scoped MediaStore Image Saving** | `MainActivity.java` | Streams media directly to `Pictures/Meme Capsule` via Android 10+ `MediaStore.Images.Media` (`IS_PENDING` atomic write, zero runtime permissions). |
 | **Targeted Sharing** | **Direct Social Intent Bridge** | `MainActivity.java` | `shareImageToApp()` targets specific package names (WhatsApp, Instagram, Facebook, X, Telegram, Discord) with automatic fallback to `Intent.createChooser`. |
-| **Collections** | **Meme Vault (Favorites)** | `src/App.tsx` | Searchable local gallery of saved memes with viewed/fetched/liked counters. Free tier limit: 100 memes (`FREE_VAULT_LIMIT = 100`); Pro tier: unlimited. |
-| **Themed Binders** | **Mood Boards ("Pinned Energy")** | `src/App.tsx`, `CreateBoardModal.tsx`, `UnpinModal.tsx` | Custom color-coded mood boards (`primary`, `secondary`, `tertiary`) with synchronized `meme_pinboard` + `meme_favorites` storage for reliable thumbnail rendering. Free tier limit increased to 7 custom Mood Boards (`FREE_BOARD_LIMIT = 7`) to foster habit building before monetization. |
+| **Collections** | **Meme Vault (Favorites)** | `src/App.tsx` | Searchable local gallery of saved memes with viewed/fetched/liked counters. Free tier limit: 20 memes (`FREE_VAULT_LIMIT = 20`); Pro tier: unlimited. |
+| **Themed Binders** | **Mood Boards ("Pinned Energy")** | `src/App.tsx`, `CreateBoardModal.tsx`, `UnpinModal.tsx` | Custom color-coded mood boards (`primary`, `secondary`, `tertiary`) with synchronized `meme_pinboard` + `meme_favorites` storage for reliable thumbnail rendering. |
 | **Settings & Privacy** | **Settings & Legal Page** | `src/App.tsx` (`activeTab === 'settings'`) | 4th bottom navigation tab & header gear shortcut consolidating **Direct Privacy Policy Link (`https://memecapsule.wtf/privacy`)**, **Website CTA Button (`https://memecapsule.wtf`)**, **Official Support Email (`support@memecapsule.wtf`)** (creator name and social handles removed from UI), **Verified 18+ Age Badge**, **Play Store Rating Trigger**, **Local Device Footprint KPIs**, **Clear Past Viewing History & Stats**, **Empty Vault & Mood Boards**, **Unblock Reported Memes**, **Delete All App History & Data** (2-step confirmation), **Capsule Feed Toggles**, **Store & Theme Equipper**, and **Replay Gesture Tour**. |
 | **Age Verification** | **First-Launch Date of Birth Gate (18+)** | `src/components/DateOfBirthModal.tsx` | Non-bypassable mandatory modal (`z-[2000]`) presented immediately **after the Onboarding Guide** on first app launch before entering the deck. DD/MM/YYYY numeric inputs + native DatePicker, strict 18+ age validation, locked to `localStorage('meme_capsule_user_dob')`. |
 | **Play Store Rating** | **In-App Rating & Review Engine** | `src/components/RatingModal.tsx` & `src/App.tsx` | Neo-Brutalist 5-star reaction popup (`GOD-TIER DANKNESS!`, `CERTIFIED BANGERS!`) triggered after viewed meme intervals. Redirects to Google Play Store listing (`market://details?id=com.meme.capsule` / `openPlayStoreListing`), provides **24-hour snooze deferral**, and permanently suppresses once submitted. |
-| **Safety & UGC** | **Content Reporting & Blocklist** | `src/ReportModal.tsx` & `src/App.tsx` | Store-compliant reporting modal (`ReportModal.tsx`) upgraded with refined typography hierarchy (Grotesque sans `Chivo` / `font-body-md`, regular case reason descriptions, and relaxed leading) and client suppression (`POST /api/report`). Reported memes are written to `localStorage('reported_memes')` and permanently filtered out of rotation. |
+| **Safety & UGC** | **Content Reporting & Blocklist** | `src/ReportModal.tsx` & `src/App.tsx` | Store-compliant reporting modal (`POST /api/report`). Reported memes are written to `localStorage('reported_memes')` and permanently filtered out of rotation. |
 | **Monetization & Store** | **In-App Capsule Store & AdMob** | `src/components/store/`, `billing.ts`, `entitlements.ts` | Clash of Clans horizontal snap-scrolling store (`snap-x snap-mandatory`), sticky category tabs, 11 single unlocks + 5 bundles, live dynamic savings badges, 8s theme preview, celebratory slam animation, and **QA Testing Mode** (fallback reference pricing, simulated test purchase, and 1-tap entitlement reset). Non-intrusive AdMob interstitial every 4th meme (suppressed if `hasAdsRemoved()`). |
 
 ### 3.4 Card Deck, Gestures & Instant-Touch Overlay Architecture
@@ -297,13 +297,6 @@ The card deck is orchestrated by `MemeStack.tsx` using `@react-spring/web` and `
 - **Instant-Touch Overlay Buttons (`MemeCard.tsx`):**
   - Because `MemeStack` attaches gesture handlers to the card with `touch-action: none`, standard click events can be swallowed during drag initiation.
   - The top-right `38px × 38px` Download & Share buttons and the bottom-right `34px × 34px` Report button execute on `onPointerDown` / `onTouchStart` with a `useRef` timestamp guard (250ms debounce) and `pointer-events-none` on inner SVG icons so touches register on the very first contact.
-- **Edge-to-Edge Visually Quiet Content Deck (Zero Feed Distraction):**
-  - Following the Instagram Reels design philosophy where the content is the absolute hero, the top header bar (`MEME CAPSULE` title, streak counters, and `GO PRO` promotional banner) was completely removed while viewing memes on the feed.
-  - The deck is cushioned with top safe-area insets (`pt-[max(env(safe-area-inset-top),16px)]`) providing serene, breathing negative space without commercial distraction.
-  - System settings and account configurations are accessed cleanly from the dedicated 4th tab in the bottom dock (`nav`), completely separating content viewing from system navigation.
-- **Distraction-Free Landing Screen:**
-  - Removed all secondary ad-unlock actions (`BONUS DROP`, `TRIPLE DROP`, `RewardPacks`) from the home waiting state (`screen === 'waiting'`). The user is greeted exclusively by the hero `HIT ME` button.
-  - Removed the `⚡ WATCH AD / 30 MIN AD-FREE` promotional button from the meme card's `#moreMenu` popover.
 
 ### 3.5 Neo-Brutalist Viral Share Bottom Sheet & Social Dispatch System
 When the user taps Share (from the card overlay, bottom CTA bar, Meme Vault, or Mood Boards), the app opens `ShareModal.tsx`:
@@ -340,14 +333,14 @@ Registered on the Android WebView as `window.MemeCapsuleAndroid`:
   - Supported package queries are declared in `AndroidManifest.xml` (`<queries>` for WhatsApp, Instagram, Facebook, Twitter, Telegram, Discord).
 
 ### 3.7 Meme Vault, Mood Boards ("Pinned Energy") & Offline Collections
-- **Meme Vault:** Persistent offline favorites list stored in `localStorage('meme_favorites')` with instant client-side search. Free tier users can save up to 100 memes (`FREE_VAULT_LIMIT = 100`); Pro users have unlimited storage.
-- **Mood Boards ("Pinned Energy"):** Color-coded thematic binders (`primary`, `secondary`, `tertiary`) created via `CreateBoardModal.tsx`. Free tier limit is 7 custom Mood Boards (`FREE_BOARD_LIMIT = 7` in `rewards.ts`, `entitlements.ts`, and `App.tsx`) to encourage daily habit building before monetization.
+- **Meme Vault:** Persistent offline favorites list stored in `localStorage('meme_favorites')` with instant client-side search. Free tier users can save up to 20 memes (`FREE_VAULT_LIMIT = 20`); Pro users have unlimited storage.
+- **Mood Boards ("Pinned Energy"):** Color-coded thematic binders (`primary`, `secondary`, `tertiary`) created via `CreateBoardModal.tsx`.
 - **Pinboard Synchronization:** When a meme is pinned to a board, the system synchronizes both `meme_pinboard` and `meme_favorites` records to guarantee that pinned meme thumbnails always render reliably even if the meme was not previously saved to the main vault.
 
 ### 3.8 Mobile Monetization (AdMob + Google Play In-App Purchases & Neo-Brutalist Store)
 - **Google AdMob:**
   - Non-intrusive full-screen interstitial ad displayed every 4th meme viewed via `@capacitor-community/admob`. Suppressed permanently if `hasAdsRemoved()`.
-  - Rewarded ads allow users to unlock optional bonus drops or temporary +1 session Mood Board slots. Rewarded ads remain fully optional even for users who purchased No Ads. Extra promotional clutter on the home screen and meme menu has been removed for a clean, respectful UX.
+  - Rewarded ads allow users to unlock optional bonus drops or temporary +1 session Mood Board slots. Rewarded ads remain fully optional even for users who purchased No Ads.
 - **Neo-Brutalist In-App Capsule Store (`src/components/store/`):**
   - Full-screen game-style overlay opened via `openStore({ focus?: ProductId })`.
   - **Clash of Clans Horizontal Game Store Architecture:**
@@ -357,7 +350,7 @@ Registered on the Android WebView as `window.MemeCapsuleAndroid`:
   - **QA Testing Mode & Free Feature Verification:**
     - Reference pricing fallback (`FALLBACK_PRODUCTS` in `billing.ts`): ensures prices are always formatted and displayed (`₹149`, `₹79`, etc.) on sideloaded APKs or test environments without requiring live Play Console activation.
     - Simulated test unlock (`testPurchase(productId)`): allows immediate testing of all paid unlocks and bundle celebrations without Google Play Billing errors.
-    - Free tier reset (`resetTestPurchases()`): one-tap button wipes all entitlements so testers can verify 100% of the free experience (Mood Boards 7-cap, default theme, classic FX, ads).
+    - Free tier reset (`resetTestPurchases()`): one-tap button wipes all entitlements so testers can verify 100% of the free experience (Mood Boards 3-cap, default theme, classic FX, ads).
     - Rewarded ad fallback in `App.tsx`: ensures testing the free Mood Board +1 session slot works reliably even if native AdMob test video fill is unavailable.
   - Catalog (`src/monetization/catalog.ts`): Single source of truth containing 11 single unlocks and 5 bundles:
     - **Single Unlocks:** `remove_ads_forever` (NO ADS), `unlimited_mood_boards` (BOARD BOSS), `fx_arcade_pack` (ARCADE FX), 4 colour themes (`theme_cyberpunk_cyan`, `theme_acid_green`, `theme_midnight_gold`, `theme_blood_orange`), and 4 drop mode packs (`pack_dark_humour`, `pack_wholesome`, `pack_desi`, `pack_gaming` - marked `available: false` / COMING SOON pending backend category endpoint).
@@ -388,7 +381,7 @@ Registered on the Android WebView as `window.MemeCapsuleAndroid`:
   - Integrated into the app flow and presented immediately **after the Onboarding Guide** on first download/install before entering the main card deck.
   - Mandatory full-screen modal (`z-[2000]`) non-bypassable: cannot be closed, skipped, or dismissed via backdrop click, Escape key, or Android hardware back navigation.
   - Auto-advancing Neo-Brutalist DD / MM / YYYY numerical inputs with numeric keypad, coupled with an optional native Android DatePicker calendar dialog.
-  - Zero-Knowledge Client-Side Evaluation: DOB is evaluated entirely on-device and never sent to the backend. In accordance with zero-tracking privacy principles, users 18+ have the option to unlock an NSFW content filter in App Settings. When enabled by an adult user, the mobile app passes `?nsfw=1` to public backend delivery endpoints (`/api/random-meme`, `/api/daily-meme`). For users under 18 or when toggled off, requests omit the parameter and the backend defaults strictly to safe/filtered memes (`is_nsfw = 0`).
+  - Strict 18+ age validation: users under 18 years of age are blocked from entering.
   - Single-entry locked: once submitted, the DOB is saved to `localStorage('meme_capsule_user_dob')` alongside `meme_capsule_dob_confirmed_at` and can never be re-input or edited.
   - Displayed as a verified, locked badge in App Settings under "PRIVACY, LEGAL & ABOUT".
   - Canonical initial onboarding sequence: `Privacy Policy Consent -> Onboarding Guide -> Date of Birth Modal (18+) -> Main Home Deck`.
@@ -428,16 +421,6 @@ To drive organic Google Play Store reviews while honoring the app's Neo-Brutalis
    - **MANDATORY RULE:** Always use explicit pixel values (e.g., `max-w-[460px]`, `max-w-[500px]`, or inline `style={{ width: '100%', maxWidth: '460px' }}`) for modal and container widths rather than `max-w-md` or `max-w-sm`.
 2. **Touch Events in Draggable Cards:** Always use `onPointerDown`/`onTouchStart` with debounce timestamp guards and `pointer-events-none` on SVG icons for overlay action buttons.
 3. **Android Build Commands:** Run `npm run lint` (`tsc --noEmit`), then `npm run build:android`, followed by `cd android && ./gradlew assembleDebug`.
-4. **Typography Hierarchy Standards:**
-   - Condensed uppercase display fonts (`Anton` / `font-headline-*` and `Oswald` / `font-label-*`) are strictly reserved for titles, card headers, CTA buttons, badges, and counters.
-   - For lengthy descriptions, report explanations (`ReportModal.tsx`), disclaimers, textareas, and body copy, always use readable grotesque sans (`Chivo` / `font-body-md` / `font-sans`) with natural mixed casing (`normal-case`), relaxed leading (`leading-relaxed`), and legible font sizing (`text-[13px]` to `text-[14px]`).
-5. **Android Dark Mode Text Inversion & WebView Force Dark Suppression:**
-   - On Android devices with system Dark Mode active, Android WebView can activate algorithmic darkening, inverting light text (`#e5e2e1`) on dark backgrounds (`#131313`) into unreadable muddy dark gray.
-   - Complete architectural solution:
-     - HTML root: `<meta name="color-scheme" content="dark" />` and inline `style="color-scheme: dark;"` in `index.html`.
-     - CSS root: `color-scheme: dark;` applied to `:root`, `html`, and `body` in `src/index.css`.
-     - Android Theme: Parent theme set to `Theme.AppCompat.NoActionBar` instead of `DayNight` in `styles.xml`.
-     - Native WebView: Explicitly disabling WebView force darkening via `webSettings.setForceDark(WebSettings.FORCE_DARK_OFF)` (API 29+) and `webSettings.setAlgorithmicDarkeningAllowed(false)` (API 33+) in `MainActivity.java`.
 
 ---
 
@@ -453,7 +436,7 @@ To drive organic Google Play Store reviews while honoring the app's Neo-Brutalis
   - Tailwind CSS v3.4 (`^3.4.19`) with PostCSS & Autoprefixer
   - TypeScript 6 (`~6.0.2`) with strict type checking
 - **Deterministic Static Prerendering (`ReactSSRRenderer`):** 
-  Uses `vite-plugin-prerender` with an in-process headless `ReactSSRRenderer` (leveraging `react-dom/server` and `react-router-dom/server`'s `StaticRouter`) to produce fully-baked, SEO-ready static HTML files for all 6 public routes (`/`, `/about`, `/team`, `/faq`, `/how-it-works`, `/privacy`).
+  Uses `vite-plugin-prerender` with an in-process headless `ReactSSRRenderer` (leveraging `react-dom/server` and `react-router-dom/server`'s `StaticRouter`) to produce fully-baked, SEO-ready static HTML files for all 9 public routes (`/`, `/about`, `/team`, `/faq`, `/how-it-works`, `/privacy`, `/terms`, `/editorial`, `/guidelines`).
 - **Dynamic Route-Specific SEO Metadata Injection:** 
   During build-time prerendering, `ReactSSRRenderer` reads route configurations (`ROUTE_SEO`) and surgically injects route-specific `<title>`, `<meta name="description">`, `<link rel="canonical">`, Open Graph tags (`og:title`, `og:description`, `og:url`), and Twitter card metadata directly into each route's generated `index.html`. This ensures 100% crawl fidelity without relying on JavaScript hydration or client-side redirects (`404.html`).
 
@@ -487,8 +470,10 @@ Located in `src/components/Screenshots.tsx`:
 - **Dedicated Deep-Dive (`src/pages/HowItWorksPage.tsx` & `src/components/HowItWorksDetail.tsx`):** Detailed breakdown covering the curated catalog, edge delivery, Reddit auxiliary feed SFW filtering, and the zero-account, in-app privacy erasure architecture.
 
 ### 4.7 Multi-Page Web Routing & Dedicated Pages
-The platform implements full client-side routing and static build prerendering across 6 distinct pages:
+The platform implements full client-side routing and static build prerendering across 9 distinct pages:
 - **Home (`/`):** Full interactive landing experience featuring hero, live drop simulator, 3D screenshots, features grid, How It Works summary, and download CTAs.
+- **Meme Culture & Editorial Hub (`/editorial`):** Dedicated publication hub featuring 4 long-form cultural essays analyzing algorithmic dopamine traps vs. serendipity, a 30-year taxonomy of meme formats (ASCII to post-irony), human curation ethics, and fair use. Delivers substantial original textual substance to satisfy AdSense publisher quality standards.
+- **Content Guidelines (`/guidelines`):** Transparent editorial guidelines defining core principles, zero-tolerance prohibitions (hate speech, harassment, doxxing, non-consensual imagery), comedic taxonomy, and expedited DMCA takedown procedures.
 - **How It Works (`/how-it-works`):** Standalone route featuring detailed system architecture and anti-algorithm delivery philosophy.
 - **FAQ (`/faq`):** Standalone route housing an exhaustive 15-question accordion grid (`src/constants/faq.ts`) with quick back-navigation and direct app download banners.
 - **About & Press Kit (`/about`):** Dedicated route featuring official Entity Definition, Quick Facts Grid, One-Liner Copy Kit with instant clipboard copy, and downloadable brand assets (logos, OG banners).
@@ -496,7 +481,8 @@ The platform implements full client-side routing and static build prerendering a
   - **Pratham Pandey:** Lead Frontend Developer & Original Ideator
   - **Anmol Verma:** Lead Backend Developer
   - **Faraz Ahmed:** Social Media & Marketing Lead
-- **Privacy Policy (`/privacy`):** Store-compliant disclosures covering Google Analytics 4, AdSense cookies, AdMob identifiers, zero personal data collection, and local storage data deletion. Includes a canonical link referencing `https://memecapsule.wtf/privacy` to prevent crawler duplicate URL warnings against `public/privacy.html`.
+- **Terms of Service (`/terms`):** Store and ad-network compliant terms governing web usage, intellectual property, digital folklore fair use, disclaimers, liability limits, and dispute resolution.
+- **Privacy Policy (`/privacy`):** Store-compliant disclosures covering Google Analytics 4, mandatory Google AdSense and DoubleClick cookie disclosures (including opt-outs via `google.com/settings/ads` and `aboutads.info`), AdMob identifiers, zero personal data collection, and local storage data deletion. Includes a canonical link referencing `https://memecapsule.wtf/privacy` to prevent crawler duplicate URL warnings against `public/privacy.html`.
 
 ### 4.8 Serverless Contact API via Resend Edge Function
 Located in `functions/api/contact.ts` and `src/components/ContactForm.tsx`:
@@ -505,10 +491,14 @@ Located in `functions/api/contact.ts` and `src/components/ContactForm.tsx`:
 - **Structured Notifications:** Delivers formatted dark-mode HTML email notifications to `support@memecapsule.wtf` with sender details and message categorization.
 - **CORS & Reliability:** Full preflight CORS headers (`POST, OPTIONS`) and friendly client-side error handling.
 
-### 4.9 Web Monetization: Google AdSense Unit `meme1`
+### 4.9 Web Monetization: Google AdSense Unit `meme1` & Low-Value Content Policy Resolution
 - Integrated via `src/components/AdBanner.tsx`.
 - Client ID: `ca-pub-2093403233028868`, Ad Slot: `6291908699` (`meme1`).
-- Placed cleanly below the live drop simulator with deferred script initialization to eliminate Cumulative Layout Shift (CLS) and protect Total Blocking Time (TBT).
+- **Policy Compliance & Placement Optimization:**
+  - Removed ad unit from interactive client canvas in `MemePreview.tsx` to eliminate low-text/empty canvas ad serving violations.
+  - Placed ad unit in content-dense editorial context (`/editorial`) where substantial original long-form articles maintain a >90% content-to-ad ratio.
+  - Added required Google AdSense and DoubleClick cookie disclosures with opt-out mechanisms in `Privacy.tsx` (v3.5).
+  - Launched comprehensive Terms of Service (`/terms`), Editorial Hub (`/editorial`), and Content Guidelines (`/guidelines`) to resolve thin-content classifications.
 
 ### 4.10 Search, Generative & AI Engine Optimization (SEO, GEO & AEO)
 1. **Schema.org Structured Data (JSON-LD):**
@@ -530,18 +520,17 @@ Located in `functions/api/contact.ts` and `src/components/ContactForm.tsx`:
 
 ### 5.1 Serverless Edge Infrastructure (Cloudflare Pages Functions)
 The backend is completely serverless, deployed on Cloudflare Pages (`https://meme-capsule-eww.pages.dev`):
-- **`GET /api/random-meme` & `GET /api/memes/random`**: Fetches a random approved meme record from D1 with strict CORS headers (`Access-Control-Allow-Origin: *`). Honors optional `?nsfw=1` query parameter; defaults strictly to safe/filtered (`AND (m.is_nsfw IS NULL OR m.is_nsfw = 0)`).
-- **`GET /api/daily-meme`**: Deterministically selects the curated daily meme based on the current UTC date. Honors optional `?nsfw=1` query parameter; defaults strictly to safe/filtered.
-- **`PATCH /api/curate/nsfw`**: Dedicated curator endpoint for toggling `is_nsfw` and recording `nsfw_flagged_by = 'curator'`.
+- **`GET /api/random-meme`**: Fetches a random approved meme record from D1 with strict CORS headers (`Access-Control-Allow-Origin: *`).
+- **`GET /api/daily-meme`**: Deterministically selects the curated daily meme based on the current UTC date.
 - **`POST /api/like`**: Atomically increments `likes_count` for a given meme ID in D1.
 - **`POST /api/events`**: Ingests batched telemetry events into the D1 event queue.
 - **`POST /api/report`**: Receives user safety reports and logs them in `meme_reports`.
-- **`/reports`**: Serves the standalone HTML/CSS moderation dashboard for reviewing flagged content with non-destructive *Mark NSFW* support.
+- **`/reports`**: Serves the standalone HTML/CSS moderation dashboard for reviewing flagged content.
 - **`/api/cat/*` & `/api/curate/*`**: Authenticated endpoints serving the multi-judge curation system.
 - **`/api/admin/*`**: Token-protected administrative endpoints for storage syncing, SQL execution, and analytics management.
 
-### 5.2 Cloudflare D1 Database Schemas, 3-Tier Partitioning & NSFW Flag Integration (Migrations 012 & 013)
-Meme Capsule uses Cloudflare D1 (serverless SQLite). The database schema has evolved through 14 migration files (`d1/migrations/`).
+### 5.2 Cloudflare D1 Database Schemas & 3-Tier Partitioning Architecture (Migration 012)
+Meme Capsule uses Cloudflare D1 (serverless SQLite). The database schema has evolved through 13 migration files (`d1/migrations/`).
 
 #### The 3-Tier Partitioning Architecture (`curation_status`):
 To prevent mixing rejected memes with uncurated backlog items, Migration 012 introduced the `curation_status` column on the `memes` table:
@@ -572,8 +561,6 @@ To prevent mixing rejected memes with uncurated backlog items, Migration 012 int
    - `status` (TEXT): Lifecycle state (`active`, `archived`, `draft`).
    - `is_active` (INTEGER): Public delivery flag (1 = active, 0 = inactive).
    - `curation_status` (TEXT DEFAULT NULL): Explicit editorial status (`keep`, `excluded`, `duplicate`, `review_later`, or `NULL` for uncurated backlog). Added in Migration 012.
-   - `is_nsfw` (INTEGER NOT NULL DEFAULT 0): 18+ content flag added in Migration 013 (`013_add_nsfw_flag.sql`). Gated on public delivery routes (`is_nsfw = 0` by default; requested via `?nsfw=1`). Indexed via `idx_memes_is_nsfw`.
-   - `nsfw_flagged_by` (TEXT): Origin of NSFW flag (`'ai-judge'`, `'curator'`, `'report'`, or `NULL`). Added in Migration 013.
    - `random_key` (REAL): Indexed random selection helper (`abs(random()) / 9223372036854775807.0`).
    - `likes_count`, `shown_count`, `share_count` (INTEGER).
 2. **`meme_curation` (Judge Consensus Votes):**
@@ -613,7 +600,6 @@ Designed for rapid, high-volume evaluation. Curators (Judges 1, 2, 3) review mem
   - `Space / Enter`: Save & Advance.
   - `Esc`: Return from manual override to AI review view.
   - `Cmd/Ctrl + Z` or `U`: Instant undo last curation decision.
-- **Curator-Facing NSFW Toggle (`🔞 NSFW 18+`):** Located on the review stage bar next to `⚡ FORCE REMOVE`. Allows curators to independently flag or unflag content as NSFW (`PATCH /api/curate/nsfw`) without altering `corpus_status`, `meme_curation` audit votes, or Layer 0 keyboard shortcuts.
 
 
 ### 5.5 SuperAdmin Arbitration & Authoritative Active Synchronization
@@ -625,15 +611,14 @@ When judges diverge in their votes, the meme surfaces in the **SuperAdmin Comman
 
 ### 5.6 Admin Console, 5-Metric Status Bar & SQL Runner (`/admin`)
 Token-protected control center (`ADMIN_API_TOKEN`):
-- **Top Stats Bar:** Displays 5 core metrics plus 6th NSFW stat card:
+- **Top Stats Bar:** Displays 5 distinct metrics:
   - `TOTAL`: **5111**
   - `ACTIVE`: **111**
   - `EXCLUDED`: **53** (High-contrast red card `#FF3B30`)
   - `ARCHIVED`: **4947** (Uncurated backlog)
   - `DRAFTS`: **0**
-  - `NSFW`: **N** (High-contrast cyber pink card `#dd0061`)
-- **Filter Tabs:** Includes `NSFW` filter tab alongside `ALL (5111)`, `ACTIVE (111)`, `EXCLUDED (53)`, `ARCHIVED (4947)`, and `DRAFT (0)`.
-- **Row Presentation:** Excluded memes display a high-visibility red `EXCLUDED` badge and strikethrough title. Memes with `is_nsfw = 1` display a prominent cyber-pink `NSFW` badge.
+- **Filter Tabs:** Includes `EXCLUDED (53)` filter tab alongside `ALL (5111)`, `ACTIVE (111)`, `ARCHIVED (4947)`, and `DRAFT (0)`.
+- **Row Presentation:** Excluded memes display a high-visibility red `EXCLUDED` badge and strikethrough title.
 - **R2 Storage Sync:** Scans R2 bucket, identifies unindexed media files, and inserts them into D1 as new meme candidates.
 - **SQL Runner:** Allows administrators to execute raw SQLite queries directly against D1 with safety guards.
 - **Analytics Management:** Triggers the recalculation engine and provides CSV/Excel export capabilities.
@@ -646,11 +631,10 @@ Standalone, token-protected dashboard rendering directly from `functions/reports
   - *Dismiss:* Clears report as benign.
   - *Archive Meme:* Sets meme `status = 'archived'` in D1 (soft removal).
   - *Blacklist Meme:* Sets `status = 'archived'` AND permanently records the meme in `content_blacklist`.
-  - *Mark NSFW:* When a report has `reason = 'NSFW'`, a non-destructive moderation action sets `is_nsfw = 1` and `nsfw_flagged_by = 'report'` on the meme without removing it from circulation, resolving the report.
 
 ### 5.8 Multimodal AI Pre-Curator Loop (`/ai-judge` & NVIDIA NIM Llama 3.2 Vision)
-1. **Gemini Vision Pipeline (`/api/ai-judge/classify.ts`):** Multimodal Google Gemini Vision (`gemini-1.5-flash`) analyzes uploaded memes, extracting captions, evaluating humor mechanisms, and performing automated NSFW/toxicity screening. When NSFW screening returns a positive signal, it writes `is_nsfw = 1, nsfw_flagged_by = 'ai-judge'` directly to `memes`.
-2. **NVIDIA NIM Python Runner (`categorise.py`):** An asynchronous worker passing images to **NVIDIA NIM (Llama 3.2 11B Vision Instruct)** to extract OCR text, score humor mechanisms (irony, absurdity, relatability), assign tone and topic, rate rarity, and perform automated toxicity/NSFW screening. When calling `/api/admin/ai-categorise`, positive screening results write `is_nsfw = 1, nsfw_flagged_by = 'ai-judge'` directly to `memes` at staging time instead of being discarded.
+1. **Gemini Vision Pipeline (`/api/ai-judge/classify.ts`):** Multimodal Google Gemini Vision (`gemini-1.5-flash`) analyzes uploaded memes, extracting captions, evaluating humor mechanisms, and proposing tags.
+2. **NVIDIA NIM Python Runner (`categorise.py`):** An asynchronous worker passing images to **NVIDIA NIM (Llama 3.2 11B Vision Instruct)** to extract OCR text, score humor mechanisms (irony, absurdity, relatability), assign tone and topic, rate rarity, and perform automated toxicity/NSFW screening before staging in D1.
 
 ### 5.9 Telemetry Pipeline & Edge Ranking Recalculation Engine
 - **Client Side:** Client actions (`view`, `skip`, `like`, `share`, `download`) are enqueued into a local circular buffer and flushed every 30 seconds to `POST /api/events`.
