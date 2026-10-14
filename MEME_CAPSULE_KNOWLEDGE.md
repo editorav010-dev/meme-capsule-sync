@@ -277,7 +277,7 @@ The mobile app rejects infinite feed algorithms. It is designed as an **Arcade V
 | **Viral Sharing** | **Neo-Brutalist Share Bottom Sheet** | `src/ShareModal.tsx` & `MainActivity.java` | Custom bottom sheet with live thumbnail preview (`PAYLOAD ATTACHED`), **Auto-Attached Promotional Message** with Google Play link, **6 Animated Social Media SVG Logos**, **`QUICKSHARE`**, **`MORE OPTIONS`** (#FF8C00 native chooser), and **`COPY TO CLIPBOARD`**. |
 | **Native Storage** | **Scoped MediaStore Image Saving** | `MainActivity.java` | Streams media directly to `Pictures/Meme Capsule` via Android 10+ `MediaStore.Images.Media` (`IS_PENDING` atomic write, zero runtime permissions). |
 | **Targeted Sharing** | **Direct Social Intent Bridge** | `MainActivity.java` | `shareImageToApp()` targets specific package names (WhatsApp, Instagram, Facebook, X, Telegram, Discord) with automatic fallback to `Intent.createChooser`. |
-| **Collections** | **Meme Vault (Favorites)** | `src/App.tsx` | Searchable local gallery of saved memes with viewed/fetched/liked counters. Free tier limit: 100 memes (`FREE_VAULT_LIMIT = 100`); Pro tier: unlimited. |
+| **Collections** | **Meme Vault (Favorites)** | `src/App.tsx` | Searchable local gallery of saved memes with viewed/fetched/liked counters. Free tier limit: 20 memes (`FREE_VAULT_LIMIT = 20`); Pro tier: unlimited. |
 | **Themed Binders** | **Mood Boards ("Pinned Energy")** | `src/App.tsx`, `CreateBoardModal.tsx`, `UnpinModal.tsx` | Custom color-coded mood boards (`primary`, `secondary`, `tertiary`) with synchronized `meme_pinboard` + `meme_favorites` storage for reliable thumbnail rendering. |
 | **Settings & Privacy** | **Settings & Legal Page** | `src/App.tsx` (`activeTab === 'settings'`) | 4th bottom navigation tab & header gear shortcut consolidating **Direct Privacy Policy Link (`https://memecapsule.wtf/privacy`)**, **Website CTA Button (`https://memecapsule.wtf`)**, **Official Support Email (`support@memecapsule.wtf`)** (creator name and social handles removed from UI), **Verified 18+ Age Badge**, **Play Store Rating Trigger**, **Local Device Footprint KPIs**, **Clear Past Viewing History & Stats**, **Empty Vault & Mood Boards**, **Unblock Reported Memes**, **Delete All App History & Data** (2-step confirmation), **Capsule Feed Toggles**, **Store & Theme Equipper**, and **Replay Gesture Tour**. |
 | **Age Verification** | **First-Launch Date of Birth Gate (18+)** | `src/components/DateOfBirthModal.tsx` | Non-bypassable mandatory modal (`z-[2000]`) presented immediately **after the Onboarding Guide** on first app launch before entering the deck. DD/MM/YYYY numeric inputs + native DatePicker, strict 18+ age validation, locked to `localStorage('meme_capsule_user_dob')`. |
@@ -324,12 +324,7 @@ When the user taps Share (from the card overlay, bottom CTA bar, Meme Vault, or 
 ### 3.6 Native Android Bridge & Scoped MediaStore Storage (`MainActivity.java`)
 Registered on the Android WebView as `window.MemeCapsuleAndroid`:
 - **`downloadImage(String url, String fileName)`**:
-  - Crash-proof background worker downloading images directly into `Pictures/Meme Capsule/` via Android 10+ MediaStore (`IS_PENDING` atomic write, safe cleanup guards, and proper trailing slash relative path).
-  - Handles HTTP 301/302/307/308 redirect chains seamlessly and presents a valid browser User-Agent to prevent CDN/Reddit 403 and 429 blocks.
-  - Automatically appends unique timestamp hashes to prevent MediaStore file collision crashes.
-  - Safe UI thread invocation for toast notifications preventing Activity lifecycle leaks or crashes.
-  - Enabled `android:usesCleartextTraffic="true"` and `android:requestLegacyExternalStorage="true"` in `AndroidManifest.xml` to prevent HTTP network traffic crashes on Android 9+ and legacy storage exceptions.
-  - **WebView Crash & Blank Screen Prevention:** Wrapped native `WebSettings` and JS interface attachment in defensive try-catch guards. Avoided intrusive `setForceDark(FORCE_DARK_OFF)` and `setAlgorithmicDarkeningAllowed(false)` calls that destabilize or blank WebView rendering pipelines across differing Android OS versions.
+  - Streams the image on a background thread into `Pictures/Meme Capsule` via Android 10+ `MediaStore.Images.Media` (`IS_PENDING` atomic write), eliminating the need for legacy storage permissions on modern Android devices.
 - **`shareImage(String url, String fileName, String title)`**:
   - Formats `title` using `buildShareMessage(title)` so the Play Store link is always included, caches the image in `getCacheDir()/shared_images/` via `FileProvider`, and opens the native share chooser.
 - **`shareImageToApp(String url, String fileName, String shareText, String targetPackage)`**:
@@ -338,7 +333,7 @@ Registered on the Android WebView as `window.MemeCapsuleAndroid`:
   - Supported package queries are declared in `AndroidManifest.xml` (`<queries>` for WhatsApp, Instagram, Facebook, Twitter, Telegram, Discord).
 
 ### 3.7 Meme Vault, Mood Boards ("Pinned Energy") & Offline Collections
-- **Meme Vault:** Persistent offline favorites list stored in `localStorage('meme_favorites')` with instant client-side search. Free tier users can save up to 100 memes (`FREE_VAULT_LIMIT = 100`); Pro users have unlimited storage.
+- **Meme Vault:** Persistent offline favorites list stored in `localStorage('meme_favorites')` with instant client-side search. Free tier users can save up to 20 memes (`FREE_VAULT_LIMIT = 20`); Pro users have unlimited storage.
 - **Mood Boards ("Pinned Energy"):** Color-coded thematic binders (`primary`, `secondary`, `tertiary`) created via `CreateBoardModal.tsx`.
 - **Pinboard Synchronization:** When a meme is pinned to a board, the system synchronizes both `meme_pinboard` and `meme_favorites` records to guarantee that pinned meme thumbnails always render reliably even if the meme was not previously saved to the main vault.
 
@@ -426,8 +421,6 @@ To drive organic Google Play Store reviews while honoring the app's Neo-Brutalis
    - **MANDATORY RULE:** Always use explicit pixel values (e.g., `max-w-[460px]`, `max-w-[500px]`, or inline `style={{ width: '100%', maxWidth: '460px' }}`) for modal and container widths rather than `max-w-md` or `max-w-sm`.
 2. **Touch Events in Draggable Cards:** Always use `onPointerDown`/`onTouchStart` with debounce timestamp guards and `pointer-events-none` on SVG icons for overlay action buttons.
 3. **Android Build Commands:** Run `npm run lint` (`tsc --noEmit`), then `npm run build:android`, followed by `cd android && ./gradlew assembleDebug`.
-4. **Startup Error Boundary & Blank Screen Prevention (`src/main.tsx`):** All top-level React rendering is shielded by a Neo-Brutalist `ErrorBoundary` and global window unhandled error/rejection listeners. This prevents React unmounting crashes from leaving a blank screen on physical devices, providing an instant user recovery action (`RELOAD CAPSULE`).
-5. **Android Styles & Theme Architecture (`styles.xml`):** Employs `Theme.AppCompat.DayNight.NoActionBar` as parent theme to ensure Capacitor and AndroidX DayNight attribute compatibility while keeping window backgrounds, status bars, and navigation bars solidly locked to `#131313`.
 
 ---
 
@@ -456,11 +449,18 @@ Located in `src/components/MemePreview.tsx`:
   - Body: Encourages installing the Android app for unlimited daily drops with rolling prefetch.
   - CTA Button: Direct Google Play install button with UTM campaign attribution (`getPlayStoreUrl('web_preview_bumper')`).
 
-### 4.3 3D Interactive Device Mockups with Authentic WebP Screenshots & Lightbox
-Located in `src/components/Screenshots.tsx`:
-- **5 Authentic Android App Screenshots:** High-density WebP + JPEG captures of the actual Android app (Home, Loading, Loaded, Vault, Mood Boards).
-- **3D Mouse-Tilt Physics:** Dynamic mouse-tilt calculations (`rotateX`, `rotateY`, `scale3d`) with heavy Neo-Brutalist drop shadows (`25px 25px 0px -10px #f4c300`).
-- **Fullscreen Lightbox Zoom:** Clicking any mockup opens a fullscreen lightbox zoom modal with keyboard arrow navigation, escape-key dismiss, and backdrop blur.
+### 4.3 Interactive Device Mockups, Flagship Hero Phone & Zero-Lag Architecture
+- **Flagship Hero Phone Mockup (`src/components/HeroPhoneMockup.tsx`):**
+  - Serves as the central visual anchor of the landing page hero section, adhering to high-end design specifications:
+    - **Hardware Chassis:** High-fidelity obsidian Android chassis with 52px corner radius, Dynamic Island notch with camera lens aperture, hardware button cutouts, and diagonal specular glass sheen.
+    - **Atmospheric Violet Bleed Glow:** Soft radial gradient (`rgba(155, 48, 255, 0.45)`) with an ambient pulse animation (`animate-glow-pulse`) bleeding into the background canvas.
+    - **Floating Elevation Shadow:** Layered spread elevation shadow (`0 25px 70px -15px rgba(0, 0, 0, 0.9), 0 9px 46px 0px rgba(155, 48, 255, 0.32)`) with subtle floating keyframe physics (`animate-mockup-float`).
+    - **Authentic App Screen Carousel:** Auto-cycling showcase cycling through authentic WebP captures (Home Drop, Meme Loaded, Liked Reaction, Offline Vault, Mood Boards) with pause-on-hover, direct switcher chips (`01` through `05`), and play/pause controls.
+    - **Zero-Lag RAF Parallax Tilt:** Compositor-driven `requestAnimationFrame` lerp loop manipulating `mockupRef.current.style.transform` directly, generating buttery smooth 60fps/120fps 3D mouse parallax with zero React re-renders on mousemove.
+- **Screenshot Carousel & Lightbox (`src/components/Screenshots.tsx`):**
+  - **9 Authentic Android App Screenshots:** High-density WebP + JPEG captures of the actual Android app.
+  - **Zero-Lag Direct DOM Tilt:** Optimized `PhoneMockup` to update transform via DOM ref directly rather than triggering component state updates on every mousemove, ensuring zero lag, zero frame drops, and rapid responsiveness across all devices.
+  - **Fullscreen Lightbox Zoom:** Clicking any mockup opens a fullscreen lightbox zoom modal with keyboard arrow navigation, escape-key dismiss, and backdrop blur.
 
 ### 4.4 Kage-Inspired Atmospheric Web UI
 - **Preloader (`Preloader.tsx`):** Animated entrance splash screen displaying the official brand emblem and `.pre-bar` progress bar.
@@ -829,7 +829,7 @@ ECOSYSTEM STRUCTURE:
    - Top-Left Header & Settings Dismissal: Removed the leaf/seed badge (🌱 1) from the top-left header and replaced it with a redesigned Neo-Brutalist Settings icon button (#1c1c1e / #A855F7, 2px solid #000, 2.5px 2.5px 0px #000). Replaced the redundant large gear square on the top right of APP SETTINGS with a Neo-Brutalist [X] Close Button, and enabled top-left header re-tap toggle, backdrop tap-to-dismiss, and Android hardware back dismissal.
    - Viral Sharing: Persistent Share Sheet Ribbon sits 100% flush (0px breathing space) on the top border of the 3-tab bottom navigation dock (bottom: calc(60px + max(env(safe-area-inset-bottom, 0px), 16px))). Expands smoothly over 320ms cubic-bezier(0.16, 1, 0.3, 1) from behind the dock, supports Instagram-style 0-latency 1:1 finger drag-to-dismiss (26% height / 0.5px/ms velocity threshold), and removes both the 5 technical/debug labels and the visible dark promotional text preview box from the frontend while preserving 100% of the promotional message + Play Store link payload on clipboard and share intents.
    - Native Java: MainActivity.java injects "window.MemeCapsuleAndroid" for Scoped MediaStore gallery saving (Pictures/Meme Capsule), Play Store listing intent (openPlayStoreListing), and targeted intent sharing (shareImageToApp).
-   - Collections, Settings & Monetization: Meme Vault (free limit 100, Pro unlimited), Mood Boards (free limit 7, Pro unlimited), dedicated Settings & History page (Privacy Policy v1.1, 4 granular history/data erasure controls, feed/buffer/shake toggles), AdMob interstitials (every 4th drop), In-App Purchase (Google Play Billing store with Clash of Clans lateral layout, ₹99/₹149/₹299/₹449 packs).
+   - Collections, Settings & Monetization: Meme Vault (free limit 20, Pro unlimited), Mood Boards, dedicated Settings & History page (Privacy Policy v1.1, 4 granular history/data erasure controls, feed/buffer/shake toggles), AdMob interstitials (every 4th drop), In-App Purchase (₹99 remove_ads_forever).
 
 2. PUBLIC WEB PLATFORM (memecapsule.wtf):
    - Tech: React 18, Vite 5, Tailwind CSS v3, React Router DOM v6, static HTML prerendering (vite-plugin-prerender with ReactSSRRenderer) on GitHub Pages.
