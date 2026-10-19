@@ -343,19 +343,18 @@ Registered on the Android WebView as `window.MemeCapsuleAndroid`:
   - Rewarded ads allow users to unlock optional bonus drops or temporary +1 session Mood Board slots. Rewarded ads remain fully optional even for users who purchased No Ads.
 - **Neo-Brutalist In-App Capsule Store (`src/components/store/`):**
   - Full-screen game-style overlay opened via `openStore({ focus?: ProductId })`.
-  - **Clash of Clans Horizontal Game Store Architecture:**
-    - Top sticky category jump bar: `[★ FEATURED]`, `[BUNDLES]`, `[PASSES]`, `[THEMES]`, `[PACKS]`, `[ACCOUNT]` with live active indicator tracking scroll position. Tapping any pill smoothly scrolls horizontally to that category.
-    - Lateral swipe physics with `snap-x snap-mandatory` and `snap-start`: cards are arranged horizontally with fixed game-proportions (`w-[275px]` to `w-[305px]`), allowing adjacent cards to peek from the right edge on mobile viewports (~360px-412px) to entice lateral browsing.
-    - Category shelves: Featured Hero (Capsule Max), Value Bundles (4), Permanent Passes (3), Colour Themes (4 with 8s preview), Drop Mode Packs (4), Play Store Account & QA (1).
+  - **Streamlined 3-Pack Neo-Brutalist Vertical Layout (`StoreScreen.tsx`):**
+    - Streamlined store presentation replacing earlier multi-category horizontal carousels with a high-conversion, compact vertical deck. Eliminates excessive negative space by employing full-width (`w-full`), compact cards (~150px height) styled with bold borders and Neo-Brutalist drop shadows.
+    - Offers exactly 3 focused packs:
+      1. **COMBO PACK (`meme_capsule_pro` - ₹199):** Flagship value bundle granting both No Ads and Unlimited Mood Boards. Highlights "BEST VALUE" and "SAVE 20%" badges with gold drop shadow styling.
+      2. **REMOVE ADS (`remove_ads_forever` - ₹199):** Permanent pass stripping all screen-transition interstitials across Vault, Settings, and Boards.
+      3. **UNLIMITED MOOD BOARDS (`unlimited_mood_boards` - ₹49):** Permanent creator pass removing the 3-board limit.
   - **QA Testing Mode & Free Feature Verification:**
-    - Reference pricing fallback (`FALLBACK_PRODUCTS` in `billing.ts`): ensures prices are always formatted and displayed (`₹149`, `₹79`, etc.) on sideloaded APKs or test environments without requiring live Play Console activation.
+    - Reference pricing fallback (`FALLBACK_PRODUCTS` in `billing.ts`): ensures prices are always formatted and displayed (`₹199`, `₹49`, etc.) on sideloaded APKs or test environments without requiring live Play Console activation.
     - Simulated test unlock (`testPurchase(productId)`): allows immediate testing of all paid unlocks and bundle celebrations without Google Play Billing errors.
     - Free tier reset (`resetTestPurchases()`): one-tap button wipes all entitlements so testers can verify 100% of the free experience (Mood Boards 3-cap, default theme, classic FX, ads).
     - Rewarded ad fallback in `App.tsx`: ensures testing the free Mood Board +1 session slot works reliably even if native AdMob test video fill is unavailable.
-  - Catalog (`src/monetization/catalog.ts`): Single source of truth containing 11 single unlocks and 5 bundles:
-    - **Single Unlocks:** `remove_ads_forever` (NO ADS), `unlimited_mood_boards` (BOARD BOSS), `fx_arcade_pack` (ARCADE FX), 4 colour themes (`theme_cyberpunk_cyan`, `theme_acid_green`, `theme_midnight_gold`, `theme_blood_orange`), and 4 drop mode packs (`pack_dark_humour`, `pack_wholesome`, `pack_desi`, `pack_gaming` - marked `available: false` / COMING SOON pending backend category endpoint).
-    - **Bundles:** `bundle_starter` (Starter Pack), `bundle_style` (Drip Pack), `bundle_meme_lovers` (Meme Head Pack), `meme_capsule_pro` (Capsule Pro), `bundle_ultimate` (Capsule Max).
-    - **Rarity Tiers:** Common (`#988ca1`), Rare (`#9b30ff`), Epic (`#dd0061`), Legendary (`#f4c300`).
+  - **Catalog (`src/monetization/catalog.ts`):** Single source of truth containing the 3 active store packs: `remove_ads_forever` (REMOVE ADS - ₹199), `unlimited_mood_boards` (UNLIMITED MOOD BOARDS - ₹49), and `meme_capsule_pro` (COMBO PACK - ₹199), preserving underlying type safety for legacy/future expansion.
   - **Billing Engine (`@capgo/native-purchases` v8.8.1):**
     - Displays live formatted prices from Google Play (`priceString`) with catalog reference fallback (`FALLBACK_PRODUCTS`) on test builds.
     - Live savings badge computed dynamically: `1 - (bundlePrice / sum(componentPrices))`. Hidden if any component price is missing.
@@ -702,7 +701,7 @@ All three codebases share a unified **Neo-Brutalist Cyber-Arcade** design langua
 | **Mobile App (APK)** | Meme Vault (Favorites) & Mood Boards | `[IMPLEMENTED]` | `src/App.tsx`, `CreateBoardModal.tsx`, `UnpinModal.tsx` |
 | **Mobile App (APK)** | Settings, Privacy & History Erasure Page| `[IMPLEMENTED]` | `src/App.tsx` (`activeTab === 'settings'`, full history wipe) |
 | **Mobile App (APK)** | AdMob Interstitials & Rewarded Drops | `[IMPLEMENTED]` | `@capacitor-community/admob` |
-| **Mobile App (APK)** | In-App Purchases (Pro Tier ₹99) | `[IMPLEMENTED]` | `@capgo/native-purchases` (`remove_ads_forever`) |
+| **Mobile App (APK)** | In-App Purchases (3 Packs: Ads ₹199, Boards ₹49, Combo ₹199) | `[IMPLEMENTED]` | `@capgo/native-purchases` (`StoreScreen.tsx`) |
 | **Mobile App (APK)** | UGC Reporting & Local Blocklist | `[IMPLEMENTED]` | `ReportModal.tsx` + `localStorage('reported_memes')` |
 | **Promo Web (`.wtf`)** | Official Multi-Page Site (`memecapsule.wtf`)| `[IMPLEMENTED]` | React 19, Vite 8, React Router v7, GitHub Pages |
 | **Promo Web (`.wtf`)** | Interactive Live Drop Preview Simulator | `[IMPLEMENTED]` | `MemePreview.tsx` (5-drop quota & fallback pool) |
@@ -833,7 +832,7 @@ ECOSYSTEM STRUCTURE:
    - Top-Left Header & Settings Dismissal: Removed the leaf/seed badge (🌱 1) from the top-left header and replaced it with a redesigned Neo-Brutalist Settings icon button (#1c1c1e / #A855F7, 2px solid #000, 2.5px 2.5px 0px #000). Replaced the redundant large gear square on the top right of APP SETTINGS with a Neo-Brutalist [X] Close Button, and enabled top-left header re-tap toggle, backdrop tap-to-dismiss, and Android hardware back dismissal.
    - Viral Sharing: Persistent Share Sheet Ribbon sits 100% flush (0px breathing space) on the top border of the 3-tab bottom navigation dock (bottom: calc(60px + max(env(safe-area-inset-bottom, 0px), 16px))). Expands smoothly over 320ms cubic-bezier(0.16, 1, 0.3, 1) from behind the dock, supports Instagram-style 0-latency 1:1 finger drag-to-dismiss (26% height / 0.5px/ms velocity threshold), and removes both the 5 technical/debug labels and the visible dark promotional text preview box from the frontend while preserving 100% of the promotional message + Play Store link payload on clipboard and share intents.
    - Native Java: MainActivity.java injects "window.MemeCapsuleAndroid" for Scoped MediaStore gallery saving (Pictures/Meme Capsule), Play Store listing intent (openPlayStoreListing), and targeted intent sharing (shareImageToApp).
-   - Collections, Settings & Monetization: Meme Vault (free limit 20, Pro unlimited), Mood Boards, dedicated Settings & History page (Privacy Policy v1.1, 4 granular history/data erasure controls, feed/buffer/shake toggles), AdMob screen transition interstitials (30s cooldown between Vault, Settings, Boards, Home; zero interruptions during meme scrolling), In-App Purchase (₹99 remove_ads_forever).
+   - Collections, Settings & Monetization: Meme Vault (free limit 20, Pro unlimited), Mood Boards, dedicated Settings & History page (Privacy Policy v1.1, 4 granular history/data erasure controls, feed/buffer/shake toggles), AdMob screen transition interstitials (30s cooldown between Vault, Settings, Boards, Home; zero interruptions during meme scrolling), In-App Purchase (3 focused packs: Remove Ads ₹199, Unlimited Mood Boards ₹49, Combo Pack ₹199).
 
 2. PUBLIC WEB PLATFORM (memecapsule.wtf):
    - Tech: React 18, Vite 5, Tailwind CSS v3, React Router DOM v6, static HTML prerendering (vite-plugin-prerender with ReactSSRRenderer) on GitHub Pages.
