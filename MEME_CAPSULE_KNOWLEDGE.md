@@ -349,10 +349,10 @@ Registered on the Android WebView as `window.MemeCapsuleAndroid`:
       1. **COMBO PACK (`meme_capsule_pro` - ₹199):** Flagship value bundle granting both No Ads and Unlimited Mood Boards. Highlights "BEST VALUE" and "SAVE 20%" badges with gold drop shadow styling.
       2. **REMOVE ADS (`remove_ads_forever` - ₹199):** Permanent pass stripping all screen-transition interstitials across Vault, Settings, and Boards.
       3. **UNLIMITED MOOD BOARDS (`unlimited_mood_boards` - ₹49):** Permanent creator pass removing the 3-board limit.
-  - **QA Testing Mode & Free Feature Verification:**
-    - Reference pricing fallback (`FALLBACK_PRODUCTS` in `billing.ts`): ensures prices are always formatted and displayed (`₹199`, `₹49`, etc.) on sideloaded APKs or test environments without requiring live Play Console activation.
-    - Simulated test unlock (`testPurchase(productId)`): allows immediate testing of all paid unlocks and bundle celebrations without Google Play Billing errors.
-    - Free tier reset (`resetTestPurchases()`): one-tap button wipes all entitlements so testers can verify 100% of the free experience (Mood Boards 3-cap, default theme, classic FX, ads).
+  - **Production Google Play Billing Mode:**
+    - Live purchase flows route exclusively through `@capgo/native-purchases` Google Play Billing sheet.
+    - All testing toggles and simulated unlock strips are purged from the production Store UI.
+    - Reference pricing fallback (`FALLBACK_PRODUCTS` in `billing.ts`): ensures prices are always formatted and displayed (`₹199`, `₹49`, etc.) while mapping live Play Console products to enforce the app's official catalog pricing.
     - Rewarded ad fallback in `App.tsx`: ensures testing the free Mood Board +1 session slot works reliably even if native AdMob test video fill is unavailable.
   - **Catalog (`src/monetization/catalog.ts`):** Single source of truth containing the 3 active store packs: `remove_ads_forever` (REMOVE ADS - ₹199), `unlimited_mood_boards` (UNLIMITED MOOD BOARDS - ₹49), and `meme_capsule_pro` (COMBO PACK - ₹199), preserving underlying type safety for legacy/future expansion.
   - **Billing Engine (`@capgo/native-purchases` v8.8.1):**
@@ -373,9 +373,19 @@ Registered on the Android WebView as `window.MemeCapsuleAndroid`:
     - Neo-Brutalist celebratory slam animation (`PurchaseCelebration.tsx`) on purchase confirmation.
     - Honest bundle partial ownership warnings: "YOU ALREADY OWN N OF M ITEMS".
     - 4 selectable Arcade FX styles: Classic, Retro Slam, Neon Glitch, Cassette Pop.
-    - Drop Mode selector with niche filters next to HIT ME button.
 
-### 3.9 Mobile Safety, Age Verification (DOB) & Content Reporting
+### 3.9 App Experience, Segmented Settings & Landing Page Architecture
+- **Restructured 3-Tab Settings Panel (`App.tsx`):**
+  - Replaces the previous 1500px vertical scroll container with a 3-tab segmented control (`[⚡ EXPERIENCE]`, `[👑 MEMBERSHIP]`, `[🛡️ PRIVACY & DATA]`) to eliminate clutter and provide instant navigation without scrolling.
+  - **Experience Tab:** Hybrid Reddit relay stream toggle, 7-meme turbo prefetch buffer toggle, card recoil & shake toggle, 4 arcade FX pills, and app color themes (`ThemePicker`).
+  - **Membership Tab:** Capsule Store hero CTA, Restore Purchases button, Google Play rating modal trigger, gesture tour replay, and live entitlement status.
+  - **Privacy & Data Tab:** Local device footprint counters, granular erasure (Clear Viewing History, Empty Vault & Mood Boards, Unblock Reported Memes, Master Wipe), Age Verification (DOB) locked badge, official Privacy Policy & Terms link, and build version.
+- **Landing Page Header & Dynamic Dismissal:**
+  - Displays a dedicated Neo-Brutalist top header on the initial landing screen (`activeTab === 'home' && screen === 'waiting'`) featuring Settings quick-access, centered branding, and Store CTA.
+  - Automatically unmounts and disappears the moment the user taps "HIT ME", giving the 4-card perspective deck 100% full-screen immersive view.
+  - Temporary category filters removed from the landing page pending backend category endpoint rollout.
+
+### 3.10 Mobile Safety, Age Verification (DOB) & Content Reporting
 - **First-Launch Date of Birth (DOB) Verification Modal (`DateOfBirthModal.tsx`):**
   - Integrated into the app flow and presented immediately **after the Onboarding Guide** on first download/install before entering the main card deck.
   - Mandatory full-screen modal (`z-[2000]`) non-bypassable: cannot be closed, skipped, or dismissed via backdrop click, Escape key, or Android hardware back navigation.
@@ -387,7 +397,7 @@ Registered on the Android WebView as `window.MemeCapsuleAndroid`:
 - **Reporting Modal (`ReportModal.tsx`):** Users can report inappropriate content (`NSFW`, `Hate Speech`, `Harassment`, `Copyright`).
 - **Immediate Local Suppression:** Submitting a report triggers `POST /api/report` to Cloudflare Pages and immediately adds the meme ID to `localStorage('reported_memes')`. The client filtering loop (`fetchValidMeme()`) permanently drops reported memes from subsequent card drops.
 
-### 3.10 Google Play Store In-App Rating & Review Engine (`RatingModal.tsx`)
+### 3.11 Google Play Store In-App Rating & Review Engine (`RatingModal.tsx`)
 To drive organic Google Play Store reviews while honoring the app's Neo-Brutalist design language and respectful UX philosophy:
 - **Eligibility & Periodic Trigger Logic (`checkRatingPromptEligibility` in `src/App.tsx`):**
   - Evaluated on card deck transitions (`totalMemesViewed`).
@@ -413,7 +423,7 @@ To drive organic Google Play Store reviews while honoring the app's Neo-Brutalis
 - **On-Demand Settings Action:**
   - Users can manually access the rating modal at any time via the "RATE ON PLAY STORE" button on the Settings screen.
 
-### 3.11 Critical Engineering Guardrails & Styling Gotchas (Tailwind v4)
+### 3.12 Critical Engineering Guardrails & Styling Gotchas (Tailwind v4)
 1. **Tailwind CSS v4 `@theme` Spacing Token Gotcha (`src/index.css`):**
    - `src/index.css` defines custom spacing tokens (`--spacing-xs: 8px`, `--spacing-sm: 16px`, `--spacing-md: 24px`, `--spacing-lg: 40px`, `--spacing-xl: 64px`).
    - In Tailwind CSS v4, utility classes like `max-w-md` or `max-w-sm` resolve to `var(--spacing-md)` (`24px`) and `var(--spacing-sm)` (`16px`).
