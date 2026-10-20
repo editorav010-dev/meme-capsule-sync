@@ -459,8 +459,11 @@ Located in `src/components/MemePreview.tsx`:
   - CTA Button: Direct Google Play install button with UTM campaign attribution (`getPlayStoreUrl('web_preview_bumper')`).
 
 ### 4.3 Interactive Device Mockups, Flagship Hero Phone & Zero-Lag Architecture
-- **Flagship Hero Phone Mockup (`src/components/HeroPhoneMockup.tsx`):**
-  - Serves as the central visual anchor of the landing page hero section, adhering to high-end design specifications:
+- **Flagship Hero Phone Mockup (`src/components/HeroPhoneMockup.tsx` — DRAFT STATUS):**
+  > **STATUS: DRAFT / INACTIVE (Preserved in Codebase, Decoupled from Live Hero)**  
+  > *Context & Decision:* Implemented in commit `12f001a` as a flagship interactive phone frame showcasing real Android captures. To streamline the landing hero experience and eliminate competing visual distractions above the fold, it has been decoupled from `src/components/Hero.tsx`. The full component code, tilt mathematics, and carousel mechanics are 100% preserved in `src/components/HeroPhoneMockup.tsx` as a draft module.  
+  > *Reactivation:* To restore, simply uncomment `import { HeroPhoneMockup } from './HeroPhoneMockup'` and `<HeroPhoneMockup />` in `src/components/Hero.tsx`.
+  - **Component Specifications (Preserved):**
     - **Hardware Chassis:** High-fidelity obsidian Android chassis with 52px corner radius, Dynamic Island notch with camera lens aperture, hardware button cutouts, and diagonal specular glass sheen.
     - **Atmospheric Violet Bleed Glow:** Soft radial gradient (`rgba(155, 48, 255, 0.45)`) with an ambient pulse animation (`animate-glow-pulse`) bleeding into the background canvas.
     - **Floating Elevation Shadow:** Layered spread elevation shadow (`0 25px 70px -15px rgba(0, 0, 0, 0.9), 0 9px 46px 0px rgba(155, 48, 255, 0.32)`) with subtle floating keyframe physics (`animate-mockup-float`).
