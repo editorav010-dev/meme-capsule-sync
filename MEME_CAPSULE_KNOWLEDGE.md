@@ -481,6 +481,14 @@ Implemented full Phase 1 behavioral telemetry pipeline adhering to strict privac
    - Consent enforcement: Behavioral events are strictly blocked when `analytics_consent` is denied or revoked. Consent denial or revocation is NEVER logged or transmitted as a behavioral analytics event.
    - Immediate queue purging: Revoking analytics consent immediately purges all pending events from the SQLite queue and in-memory diagnostics without transmission.
    - Privacy protection: Zero logging of consent values, `user_hash`, auth tokens, or raw payloads across all release and debug channels.
+10. **Backend Contract Integration & Client Hardening (Phases 1–7):**
+   - Full contract adherence: Every emitted event contains `schema_version: 1`, `platform: "android"`, `consent_status: "granted"`, and a normalized `consent_version` string (`"v1"`, `"v2"`, etc.).
+   - Recursive sanitization: `AnalyticsEvent.java` and `deviceId.ts` recursively sanitize nested JSON objects and arrays, stripping prohibited PII (`email`, `phone`, `imei`, `mac`, `latitude`, `longitude`, `gallery`, `raw_name`) and secret keys (`token`, `auth`, `authorization`, `secret`, `password`, `api_key`, `app_token`, `device_id`, `bearer`).
+   - Request size & batch limits: Enforces $\le 200$ events per batch and $\le 2\text{ MiB}$ request body size limit with automatic chunking before transmission.
+   - Non-infinite error recovery: HTTP 401 & 403 trigger auth failure notifications and disable transmission; HTTP 404 & 405 disable transmission on endpoint configuration errors; HTTP 400 permanently drops invalid batches; HTTP 429 & 500 apply exponential backoff capped at 120s.
+   - Atomic revocation: Revoking consent purges SQLite and in-memory queues immediately and blocks both pending and future uploads.
+   - Idempotent retries: Event IDs are immutable and stable across retry attempts and process restarts.
+   - Release configuration security: Packaging strictly fails if `ANALYTICS_APP_TOKEN` is missing, placeholder, or points to local/unencrypted endpoints (`localhost`, `127.0.0.1`, `http://`).
 
 ---
 
