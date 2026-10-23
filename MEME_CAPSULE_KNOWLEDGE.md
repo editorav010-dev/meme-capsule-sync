@@ -463,8 +463,15 @@ Implemented full Phase 1 behavioral telemetry pipeline adhering to strict privac
    - Registered on Android WebView as `window.MemeCapsuleAnalytics`.
    - Bridges `trackEvent()`, `setConsent()`, `getConsentStatus()`, `flushQueue()`, and `getDiagnostics()`.
 7. **Debug-Only Analytics Inspector:**
-   - Visible in development builds in Settings Tab 3 (`PRIVACY & DATA`).
-   - Displays real-time queue count, last flush timestamp, accepted / rejected / dropped event counters, and last error message without exposing hashes or raw payloads.
+   - Visible in development builds in Settings Tab 3 (`PRIVACY & DATA`) via `import.meta.env.DEV` gating; completely removed from production release bundles.
+   - Displays real-time queue count, last flush timestamp, accepted / rejected / dropped event counters, and sanitized last error message without exposing hashes, tokens, or raw payloads.
+8. **Authentication Hardening & Abstraction (`AnalyticsAuthProvider`):**
+   - Decoupled network delivery from static credentials via pluggable `AnalyticsAuthProvider` interface (`com.meme.capsule.analytics.auth` and `src/analytics/analyticsAuth.ts`).
+   - Active provider: `StaticTokenAuthProvider` supporting environment-injected `X-Analytics-App-Token`.
+   - Security classification: Any APK-compiled token is public and recoverable by reverse engineering; it functions strictly as temporary coarse abuse throttling, not as proof of app identity or durable secret.
+   - Future attestation: `PlayIntegrityAuthProvider` architecture stub prepared for hardware-backed attestation / short-lived session token exchange once backend attestation is deployed.
+   - Build enforcement: Gradle release tasks (`assembleRelease`, `bundleRelease`) automatically fail if `ANALYTICS_APP_TOKEN` is unset or contains placeholders (`-PALLOW_EMPTY_ANALYTICS_TOKEN=true` bypass for local unsigned verification).
+   - Zero token leakage: Tokens, user hashes, and payloads are strictly excluded from logs, error diagnostics, and production bundles.
 
 ---
 
