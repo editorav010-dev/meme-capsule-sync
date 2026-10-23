@@ -489,6 +489,7 @@ Implemented full Phase 1 behavioral telemetry pipeline adhering to strict privac
    - Atomic revocation: Revoking consent purges SQLite and in-memory queues immediately and blocks both pending and future uploads.
    - Idempotent retries: Event IDs are immutable and stable across retry attempts and process restarts.
    - Release configuration security: Packaging strictly fails if `ANALYTICS_APP_TOKEN` is missing, placeholder, or points to local/unencrypted endpoints (`localhost`, `127.0.0.1`, `http://`).
+   - BuildConfig literal escaping: In `build.gradle`, environment-injected tokens and endpoints are sanitized with backslash and quote escaping (`replace('\\', '\\\\').replace('"', '\\"')`) so complex tokens containing quotes, symbols, and special characters generate valid Java string literals in `BuildConfig.java` without compiler errors.
 
 ---
 
