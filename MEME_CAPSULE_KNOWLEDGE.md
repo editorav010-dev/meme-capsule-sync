@@ -469,9 +469,10 @@ Implemented full Phase 1 behavioral telemetry pipeline adhering to strict privac
    - Decoupled network delivery from static credentials via pluggable `AnalyticsAuthProvider` interface (`com.meme.capsule.analytics.auth` and `src/analytics/analyticsAuth.ts`).
    - Active provider: `StaticTokenAuthProvider` supporting environment-injected `X-Analytics-App-Token`.
    - Security classification: Any APK-compiled token is public and recoverable by reverse engineering; it functions strictly as temporary coarse abuse throttling, not as proof of app identity or durable secret.
-   - Future attestation: `PlayIntegrityAuthProvider` architecture stub prepared for hardware-backed attestation / short-lived session token exchange once backend attestation is deployed.
-   - Build enforcement: Gradle release tasks (`assembleRelease`, `bundleRelease`) automatically fail if `ANALYTICS_APP_TOKEN` is unset or contains placeholders (`-PALLOW_EMPTY_ANALYTICS_TOKEN=true` bypass for local unsigned verification).
-   - Zero token leakage: Tokens, user hashes, and payloads are strictly excluded from logs, error diagnostics, and production bundles.
+   - Future attestation: `PlayIntegrityAuthProvider` architecture stub prepared for hardware-backed attestation / short-lived session token exchange once backend attestation is deployed. It is explicitly unsupported and never claimed as active, and does not silently fall back to static tokens in release builds.
+   - Strict build enforcement: Gradle release tasks (`assembleRelease`, `bundleRelease`) strictly require a valid, non-placeholder `ANALYTICS_APP_TOKEN`. The `ALLOW_EMPTY_ANALYTICS_TOKEN` bypass is strictly prohibited and forbidden for release packaging (`assembleRelease`, `bundleRelease`).
+   - Web bundle security: `VITE_ANALYTICS_APP_TOKEN` removed entirely; no tokens embedded in production web assets or source maps; browser analytics remains disabled on non-native web runtimes without configured credentials.
+   - Zero token leakage & release diagnostics: Tokens, user hashes, and payloads are strictly excluded from logs, error diagnostics, and production bundles. All bridge and manager exception logs are guarded behind `BuildConfig.DEBUG`.
 
 ---
 
