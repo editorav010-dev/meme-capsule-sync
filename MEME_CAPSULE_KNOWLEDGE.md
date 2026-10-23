@@ -473,6 +473,14 @@ Implemented full Phase 1 behavioral telemetry pipeline adhering to strict privac
    - Strict build enforcement: Gradle release tasks (`assembleRelease`, `bundleRelease`) strictly require a valid, non-placeholder `ANALYTICS_APP_TOKEN`. The `ALLOW_EMPTY_ANALYTICS_TOKEN` bypass is strictly prohibited and forbidden for release packaging (`assembleRelease`, `bundleRelease`).
    - Web bundle security: `VITE_ANALYTICS_APP_TOKEN` removed entirely; no tokens embedded in production web assets or source maps; browser analytics remains disabled on non-native web runtimes without configured credentials.
    - Zero token leakage & release diagnostics: Tokens, user hashes, and payloads are strictly excluded from logs, error diagnostics, and production bundles. All bridge and manager exception logs are guarded behind `BuildConfig.DEBUG`.
+9. **Phase 4 Consent Lineage Implementation:**
+   - Contract adherence: `consent_version` is included in every analytics event payload across Android Java (`AnalyticsEvent.java`) and TypeScript (`analyticsTypes.ts`).
+   - Current policy version: Default and initial consent version is `"v1"`.
+   - Dynamic policy version updates: When policy updates occur, version persists as string (e.g. `"v2"`) and attaches to all subsequent event payloads.
+   - Backward compatibility: Legacy SharedPreferences integer storage and numeric strings (e.g. `1`, `"1"`) automatically normalize to `"v1"`. Deserialization of payloads lacking `consent_version` safely defaults to `"v1"`.
+   - Consent enforcement: Behavioral events are strictly blocked when `analytics_consent` is denied or revoked. Consent denial or revocation is NEVER logged or transmitted as a behavioral analytics event.
+   - Immediate queue purging: Revoking analytics consent immediately purges all pending events from the SQLite queue and in-memory diagnostics without transmission.
+   - Privacy protection: Zero logging of consent values, `user_hash`, auth tokens, or raw payloads across all release and debug channels.
 
 ---
 
