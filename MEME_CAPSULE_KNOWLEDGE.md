@@ -34,9 +34,10 @@
    - 3.6 [Native Android Bridge & Scoped MediaStore Storage (`MainActivity.java`)](#36-native-android-bridge--scoped-mediastore-storage-mainactivityjava)
    - 3.7 [Meme Vault, Mood Boards ("Pinned Energy") & Offline Collections](#37-meme-vault-mood-boards-pinned-energy--offline-collections)
    - 3.8 [Mobile Monetization (AdMob + Google Play In-App Purchases & Neo-Brutalist Store)](#38-mobile-monetization-admob--google-play-in-app-purchases--neo-brutalist-store)
-   - 3.9 [Mobile Safety, Age Verification (DOB) & Content Reporting](#39-mobile-safety-age-verification-dob--content-reporting)
-   - 3.10 [Google Play Store In-App Rating & Review Engine (`RatingModal.tsx`)](#310-google-play-store-in-app-rating--review-engine-ratingmodaltsx)
-   - 3.11 [Critical Engineering Guardrails & Styling Gotchas (Tailwind v4)](#311-critical-engineering-guardrails--styling-gotchas-tailwind-v4)
+   - 3.10 [Mobile Safety, Age Verification (DOB) & Content Reporting](#310-mobile-safety-age-verification-dob--content-reporting)
+   - 3.11 [Google Play Store In-App Rating & Review Engine (`RatingModal.tsx`)](#311-google-play-store-in-app-rating--review-engine-ratingmodaltsx)
+   - 3.12 [Critical Engineering Guardrails & Styling Gotchas (Tailwind v4)](#312-critical-engineering-guardrails--styling-gotchas-tailwind-v4)
+   - 3.13 [Phase 1 Android Analytics Instrumentation (Offline SQLite Queue, Consent & Diagnostics)](#313-phase-1-android-analytics-instrumentation-offline-sqlite-queue-consent--diagnostics)
 4. [PART B: PROMOTIONAL, PRESS & WEB PLATFORM (`memecapsule.wtf`)](#4-part-b-promotional-press--web-platform-memecapsulewtf)
    - 4.1 [Platform Architecture, Modernized Stack & Static HTML Prerendering](#41-platform-architecture-modernized-stack--static-html-prerendering)
    - 4.2 [Interactive Live Drop Preview Simulator & Quota Lockout Bumper](#42-interactive-live-drop-preview-simulator--quota-lockout-bumper)
@@ -430,6 +431,40 @@ To drive organic Google Play Store reviews while honoring the app's Neo-Brutalis
    - **MANDATORY RULE:** Always use explicit pixel values (e.g., `max-w-[460px]`, `max-w-[500px]`, or inline `style={{ width: '100%', maxWidth: '460px' }}`) for modal and container widths rather than `max-w-md` or `max-w-sm`.
 2. **Touch Events in Draggable Cards:** Always use `onPointerDown`/`onTouchStart` with debounce timestamp guards and `pointer-events-none` on SVG icons for overlay action buttons.
 3. **Android Build Commands:** Run `npm run lint` (`tsc --noEmit`), then `npm run build:android`, followed by `cd android && ./gradlew assembleDebug`.
+
+### 3.13 Phase 1 Android Analytics Instrumentation (Offline SQLite Queue, Consent & Diagnostics)
+Implemented full Phase 1 behavioral telemetry pipeline adhering to strict privacy guardrails:
+1. **Consent Management (`ConsentManager.java` & `PrivacyConsentModal.tsx`):**
+   - Explicitly records `analytics_consent`, `advertising_consent`, `consent_version` (1), and `consent_timestamp_utc`.
+   - Accessible and editable anytime via **Settings Tab 3 (Privacy & Data)**.
+   - If `analytics_consent` is denied or not granted, event creation and transmission are strictly blocked.
+2. **Anonymous Identity (`IdentityManager.java` & `deviceId.ts`):**
+   - On first launch, generates a persistent cryptographically random UUID (`anon_install_id`).
+   - Generates `user_hash` as a 64-character lowercase SHA-256 hash (`user_hash = sha256(anon_install_id)`).
+   - Strictly zero collection of PII (email, phone, contacts, IMEI, MAC address, GPS coordinates, or local gallery files).
+3. **Event Contract & Schema Version 1:**
+   - 19 allowlisted event names: `app_open`, `app_background`, `session_start`, `session_end`, `meme_view`, `meme_like`, `meme_share`, `meme_save`, `meme_scroll`, `category_click`, `onboarding_complete`, `profile_open`, `subscription_click`, `screen_view`, `feed_refresh`, `meme_reported`, `ad_impression`, `ad_reward_viewed`, `retention_checkin`.
+   - Standard payload: `schema_version` (1), `event_id` (UUID), `event_name`, `user_hash`, `session_id`, `timestamp_utc` (ISO-8601), `platform: "android"`, `app_version` ("3.7"), `os_version`, optional dimensions, sanitized `properties`, and `consent_status: "granted"`.
+4. **Local Offline SQLite Queue (`AnalyticsDbHelper.java`):**
+   - Backed by SQLite (`meme_capsule_analytics.db`) in Android native storage; thread-safe background execution.
+   - Bounded maximum queue capacity: 1,000 events. Oldest events are evicted via FIFO when capacity is reached, incrementing a local dropped events counter.
+   - Flush triggers: queue threshold reaching 50 events, periodic 30s timer, app backgrounding (`onPause`), and app exit / session destruction (`onDestroy`).
+5. **Network Delivery & Exponential Backoff (`AnalyticsUploader.java` & `analyticsFlush.ts`):**
+   - Delivers POST batches (max 200 events) to `https://meme-capsule-eww.pages.dev/api/analytics/events`.
+   - Authenticated via build-configured `X-Analytics-App-Token` header.
+   - Distinct HTTP status handling:
+     - `200 OK`: Atomically removes accepted events from queue.
+     - `400 Bad Request`: Discards invalid events to prevent indefinite retry loops.
+     - `401 Unauthorized`: Disables transmission and records configuration error.
+     - `429 Too Many Requests`: Retains events and applies exponential backoff with jitter.
+     - `5xx / Network Failures`: Retains events and schedules backoff retry (up to 120s).
+   - Strict logging protection: Payload contents, user hashes, and authorization tokens are NEVER printed to logs.
+6. **Native Android Bridge (`MemeCapsuleAnalyticsBridge.java`):**
+   - Registered on Android WebView as `window.MemeCapsuleAnalytics`.
+   - Bridges `trackEvent()`, `setConsent()`, `getConsentStatus()`, `flushQueue()`, and `getDiagnostics()`.
+7. **Debug-Only Analytics Inspector:**
+   - Visible in development builds in Settings Tab 3 (`PRIVACY & DATA`).
+   - Displays real-time queue count, last flush timestamp, accepted / rejected / dropped event counters, and last error message without exposing hashes or raw payloads.
 
 ---
 
