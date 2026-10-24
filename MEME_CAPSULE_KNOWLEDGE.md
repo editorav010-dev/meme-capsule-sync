@@ -38,6 +38,7 @@
    - 3.11 [Google Play Store In-App Rating & Review Engine (`RatingModal.tsx`)](#311-google-play-store-in-app-rating--review-engine-ratingmodaltsx)
    - 3.12 [Critical Engineering Guardrails & Styling Gotchas (Tailwind v4)](#312-critical-engineering-guardrails--styling-gotchas-tailwind-v4)
    - 3.13 [Phase 1 Android Analytics Instrumentation (Offline SQLite Queue, Consent & Diagnostics)](#313-phase-1-android-analytics-instrumentation-offline-sqlite-queue-consent--diagnostics)
+   - 3.14 [First-Class Settings Tab Architecture & Redesign (v3.8)](#314-first-class-settings-tab-architecture--redesign-v38)
 4. [PART B: PROMOTIONAL, PRESS & WEB PLATFORM (`memecapsule.wtf`)](#4-part-b-promotional-press--web-platform-memecapsulewtf)
    - 4.1 [Platform Architecture, Modernized Stack & Static HTML Prerendering](#41-platform-architecture-modernized-stack--static-html-prerendering)
    - 4.2 [Interactive Live Drop Preview Simulator & Quota Lockout Bumper](#42-interactive-live-drop-preview-simulator--quota-lockout-bumper)
@@ -522,6 +523,19 @@ Implemented full Phase 1 behavioral telemetry pipeline adhering to strict privac
       - `meme_view` events are deduplicated to fire once per displayed meme card, preventing duplicate fires on React component re-renders.
     - **Missing Role Proposals:**
       - Missing roles documented in `ANALYTICS_BACKEND_REQUEST.md` (`meme_pin`, `ad_reward_offered`, `client_error`, `meme_download`) without emitting unapproved names.
+
+### 3.14 First-Class Settings Tab Architecture & Redesign (v3.8)
+Settings was refactored from an ephemeral popup modal into an authentic first-class tab matching the design and layout of Meme Vault and Mood Boards:
+1. **Removal of Modal Overlay Behaviors:**
+   - Deleted the full-screen dimmed backdrop overlay (`fixed inset-0 bg-black/55 z-20`) that previously caught taps outside the card and dismissed settings.
+   - Removed the header close (`[X]`) dismiss button, replacing it with a Neo-Brutalist `CONFIG` badge featuring an animated gear indicator (`Settings size={17}`).
+   - Removed modal dialog history trapping (`window.history.pushState({ memeCapsuleSettings: true })`) and Escape key / popstate auto-dismiss listeners.
+   - Removed `closeSettings()` and `toggleSettings()`; switching tabs is now purely direct and declarative via `setActiveTab('settings')`.
+2. **First-Class Tab Layout:**
+   - Container updated to `w-full max-w-[700px] flex flex-col gap-md animate-in slide-in-from-bottom-6 duration-200`, sitting directly in `<main>` with standard tab padding and z-index.
+   - Bottom navigation bar Settings icon button now functions symmetrically to Home, Vault, and Mood Boards: direct navigation to `'settings'` with active tab highlight (`bg-primary text-on-primary shadow-[3px_3px_0px_0px_var(--color-secondary-container)]`).
+   - Home landing page top-left Settings button directly navigates to `setActiveTab('settings')`.
+   - Category segmented control (`EXPERIENCE`, `MEMBERSHIP`, `PRIVACY`) acts as clean sub-navigation within the tab, preserving all feed customization toggles, Store & entitlement checks, footprint KPIs, data wiping modals, and analytics consent management.
 
 ---
 
