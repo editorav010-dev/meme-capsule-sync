@@ -5,7 +5,7 @@
 > **Classification:** Living Project Context & Reusable AI Operating Reference Across All Codebases  
 > **App / System Name:** Meme Capsule  
 > **Android Package Identifier:** `com.meme.capsule`  
-> **Mobile App Version:** `v3.8` (`versionCode 29`) — Built APKs and AAB in `android/app/build/outputs/`  
+> **Mobile App Version:** `v3.8` (`versionCode 29`) — Built APKs and AABs in `builds/` (`meme-capsule-v3.8.apk`, `meme-capsule-v3.8.aab`, `app-release.apk`) and `android/app/build/outputs/`  
 > **Official Web Platform:** [https://memecapsule.wtf](https://memecapsule.wtf) (Vite / React Multi-Page Static Prerendered)  
 > **Serverless Edge Backend:** [https://meme-capsule-eww.pages.dev](https://meme-capsule-eww.pages.dev) (Cloudflare Pages, D1 SQLite, R2 CDN)  
 > **Project Team & Engineering Leadership:**  
