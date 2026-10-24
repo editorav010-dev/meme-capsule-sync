@@ -5,7 +5,7 @@
 > **Classification:** Living Project Context & Reusable AI Operating Reference Across All Codebases  
 > **App / System Name:** Meme Capsule  
 > **Android Package Identifier:** `com.meme.capsule`  
-> **Mobile App Version:** `v3.7` (`versionCode 28`) — Built APKs in `builds/`  
+> **Mobile App Version:** `v3.8` (`versionCode 29`) — Built APKs and AAB in `android/app/build/outputs/`  
 > **Official Web Platform:** [https://memecapsule.wtf](https://memecapsule.wtf) (Vite / React Multi-Page Static Prerendered)  
 > **Serverless Edge Backend:** [https://meme-capsule-eww.pages.dev](https://meme-capsule-eww.pages.dev) (Cloudflare Pages, D1 SQLite, R2 CDN)  
 > **Project Team & Engineering Leadership:**  
@@ -490,6 +490,38 @@ Implemented full Phase 1 behavioral telemetry pipeline adhering to strict privac
    - Idempotent retries: Event IDs are immutable and stable across retry attempts and process restarts.
    - Release configuration security: Packaging strictly fails if `ANALYTICS_APP_TOKEN` is missing, placeholder, or points to local/unencrypted endpoints (`localhost`, `127.0.0.1`, `http://`).
    - BuildConfig literal escaping: In `build.gradle`, environment-injected tokens and endpoints are sanitized with backslash and quote escaping (`replace('\\', '\\\\').replace('"', '\\"')`) so complex tokens containing quotes, symbols, and special characters generate valid Java string literals in `BuildConfig.java` without compiler errors.
+11. **Phase 5 Real-Time Dashboard Compatibility & Ingestion Hardening (v3.8 / versionCode 29):**
+    - **Flush Cadence Optimization:**
+      - Session start: Flushes immediately after the first event of a session (`session_start`) once consent is granted.
+      - Foreground cadence: Flushes every 20 s (+0 to 5 s jitter) if the queue is non-empty. Automatically debounces 2 s when $\ge 10$ events are queued to coalesce rapid user bursts.
+      - Backgrounding / Exit: Flushes immediately on background transition and enqueues Android `WorkManager` one-time background work (`AnalyticsUploadWorker`, network-constrained; expedited when allowed, otherwise standard). Consent is verified at execution time.
+      - Single-flight concurrency: At most one flush in flight enforced via atomic locks (`AtomicBoolean` / `isFlushInFlight`).
+      - Chunking: Large queues are split into sequential chunks of at most 100 events and 1 MiB, sent with $\ge 1$ s pacing between chunks.
+      - Idle efficiency: Zero timers or wake-ups when the queue is empty or the app is in the background.
+    - **Resilient Upload & Poison-Batch Bisection:**
+      - `2xx`: Deletes accepted events and resets consecutive error counts.
+      - `400` / `422`: Never retried as-is. Recursively bisects batches into halves to isolate offending event(s), confirms with a single-event send, drops and counts only the poison event, and delivers valid events. Poison events never block the queue.
+      - `401` / `403`: Token rejection pauses uploads for 6 hours (doubling to 24 hours), retaining events up to the queue cap without hot loops.
+      - `413`: Halves current chunk limit (100 -> 50 -> 25 -> ...).
+      - `429`: Honours `Retry-After` header (integer seconds or RFC 1123 HTTP-date); defaults to 60 s if missing. Zero retry attempts before cooldown expires.
+      - `5xx` / Network Errors: Exponential backoff (5 s, 10 s, 20 s, 40 s ... capped at 15 min with jitter); resets on success.
+    - **Queue Caps, Expiry & Rate Limits:**
+      - Stale drop: Drops events older than 23 hours prior to sending and increments local dropped counter.
+      - Queue cap: Expanded to 5,000 events with oldest-first (FIFO) eviction on overflow.
+      - Hourly rate limiter: Client-side sliding-window cap of 600 events per hour (`HourlyRateLimiter`) prevents runaway loops from reaching the server 1,500/hr quota.
+    - **Clock Skew Detection & Timestamp Clamping:**
+      - Inspects HTTP `Date` header on every successful response: computes `offset = serverTime - deviceTime`.
+      - If $\|offset\| > 60\text{ s}$, persists offset and applies to subsequent event generation.
+      - Clamps any event timestamped $> 60\text{ s}$ ahead of `(device now + offset)` to that threshold before transmission.
+      - Adds `X-Client-Sent-At` header (corrected UTC now) to all upload requests.
+    - **Input Hygiene & Allowlist Enforcement:**
+      - `app_version`: Sanitized from `BuildConfig.VERSION_NAME` to strictly match `^[0-9A-Za-z.+_-]{1,32}$` (disallowed characters replaced with "-", truncated to 32 chars).
+      - Property validation: Strictly validates event names and property keys against ONE local constant allowlist (`ALLOWED_EVENTS` and `ALLOWED_PROPERTY_KEYS`). Unknown keys/events are dropped and counted locally. Values must be scalars truncated to 256 characters. No nested objects or arrays.
+    - **Session Continuity & Deduplication:**
+      - Sessions persist across brief backgrounding (such as share sheet handoffs). A new session starts only after 30 minutes in the background.
+      - `meme_view` events are deduplicated to fire once per displayed meme card, preventing duplicate fires on React component re-renders.
+    - **Missing Role Proposals:**
+      - Missing roles documented in `ANALYTICS_BACKEND_REQUEST.md` (`meme_pin`, `ad_reward_offered`, `client_error`, `meme_download`) without emitting unapproved names.
 
 ---
 
