@@ -41,7 +41,7 @@
    - 3.14 [First-Class Settings Tab Architecture & Redesign (v3.8)](#314-first-class-settings-tab-architecture--redesign-v38)
 4. [PART B: PROMOTIONAL, PRESS & WEB PLATFORM (`memecapsule.wtf`)](#4-part-b-promotional-press--web-platform-memecapsulewtf)
    - 4.1 [Platform Architecture, Modernized Stack & Static HTML Prerendering](#41-platform-architecture-modernized-stack--static-html-prerendering)
-   - 4.2 [Interactive Live Drop Preview Simulator & Quota Lockout Bumper](#42-interactive-live-drop-preview-simulator--quota-lockout-bumper)
+   - 4.2 [Interactive Live Drop Preview Simulator, Upfront 10-Meme FIFO Buffer & Quota Lockout Bumper](#42-interactive-live-drop-preview-simulator-upfront-10-meme-fifo-buffer--quota-lockout-bumper)
    - 4.3 [3D Interactive Device Mockups with Authentic WebP Screenshots & Lightbox](#43-3d-interactive-device-mockups-with-authentic-webp-screenshots--lightbox)
    - 4.4 [Kage-Inspired Atmospheric Web UI](#44-kage-inspired-atmospheric-web-ui)
    - 4.5 [Complete Removal of Acid Glitch UI Mode](#45-complete-removal-of-acid-glitch-ui-mode)
@@ -83,7 +83,7 @@
 ### Q1: What is Meme Capsule?
 **Meme Capsule** is an anti-algorithm, single-action meme delivery platform engineered for immediate entertainment without feeds, doomscrolling, or social clutter.
 - **Public Mobile Product:** A native Android application (`com.meme.capsule`, current version `v3.7` / `versionCode 28`) available on Google Play. Built with React 19, Vite 6, Tailwind CSS v4, and Capacitor 8, it operates like a digital arcade vending machine: tapping the **`HIT ME`** button dispenses exactly one hand-screened, high-variance meme onto a 4-card 3D perspective spring stack.
-- **Public Web Platform:** A multi-page, statically prerendered web platform at [https://memecapsule.wtf](https://memecapsule.wtf) featuring a live interactive drop preview simulator (with a 5-drop quota and Google Play install bumper), 3D interactive phone mockups with authentic WebP screenshots, Section 04.5 "Under the Hood" technical transparency, an official `/about` Press Kit, and Google AdSense monetization (`meme1`).
+- **Public Web Platform:** A multi-page, statically prerendered web platform at [https://memecapsule.wtf](https://memecapsule.wtf) featuring a live interactive drop preview simulator (with an upfront 10-meme FIFO prefetch buffer and Google Play install bumper), 3D interactive phone mockups with authentic WebP screenshots, Section 04.5 "Under the Hood" technical transparency, an official `/about` Press Kit, and Google AdSense monetization (`meme1`).
 - **Developer / Serverless Edge Backend:** A serverless edge architecture on Cloudflare Pages (`https://meme-capsule-eww.pages.dev`), Cloudflare D1 (SQLite database), and Cloudflare R2 (media bucket), coupled with Neo-Brutalist internal tools for human multi-judge curation (`/curate`), admin database syncing (`/admin`), user safety moderation (`/reports`), and AI-assisted pre-evaluation (`/ai-judge`).
 
 ### Q2: Why does Meme Capsule exist?
@@ -109,7 +109,7 @@ Modern internet culture is trapped inside social media feeds (Instagram, TikTok,
    - Instant-touch overlay buttons (`38px × 38px` Download & Share on top-right, `34px × 34px` Report on bottom-right) and a 4-button CTA bar (**LIKE**, **VAULT**, **PIN**, **SHARE**) provide immediate one-tap utility.
    - Tapping **SHARE** opens the Neo-Brutalist Share Bottom Sheet with live thumbnail preview, an auto-attached promotional message with Google Play Store download link, and 6 animated social media SVG dispatch buttons (WhatsApp, Instagram, Facebook, X, Telegram, Discord).
 2. **Public Web Flow (`memecapsule.wtf`):**
-   - Visitors explore an authentic live drop preview simulator with a 5-drop quota counter. After 5 drops, a conversion lockout bumper prompts Google Play app installation with UTM campaign tracking.
+   - Visitors explore an authentic live drop preview simulator powered by an upfront 10-meme FIFO prefetch buffer. After 10 drops, a conversion lockout bumper prompts Google Play app installation with UTM campaign tracking.
    - Visitors can tilt 3D interactive phone mockups showcasing real WebP screenshots, open a full-resolution lightbox zoom modal, review technical breakdowns under Section 04.5 "Under the Hood", access the official Press Kit on `/about`, and consult an expanded 15-question FAQ.
 3. **Internal Backend Flow:**
    - Unreviewed memes ingested into Cloudflare D1 and R2 storage are assigned `status = 'archived'`, `is_active = 0`, and `curation_status = NULL` (Uncurated Backlog).
@@ -127,7 +127,7 @@ Modern internet culture is trapped inside social media feeds (Instagram, TikTok,
 - **Targeted Social Share Intent Bridge:** `shareImageToApp()` targeting specific package names with automatic fallback to native chooser.
 - **Meme Vault & Mood Boards:** Local offline favorites gallery (free tier limit 20, Pro unlimited) and color-coded themed binders ("Pinned Energy") with synchronized pinboard/favorites storage.
 - **Arcade Hacker Decryption Console:** Terminal animations, erratic countdowns, and diagnostic logs (`CHECKING REDDIT RELAY...`, `HARVESTING D1 SHARDS...`).
-- **Interactive Web Live Preview:** Web simulator on `memecapsule.wtf` with 5-drop quota counter, automated fallback recovery, and Google Play install bumper.
+- **Interactive Web Live Preview:** Web simulator on `memecapsule.wtf` with an upfront 10-meme FIFO prefetch buffer, automated fallback recovery, zero loading screen transitions, and Google Play install bumper.
 - **3D Interactive Phone Mockups:** 5 authentic Android app screenshots in modern WebP + JPEG format with mouse-tilt 3D physics and fullscreen lightbox zoom.
 - **Kage-Inspired Atmospheric Web UI:** Preloader animation, magnetic circular cursor, GPU-accelerated film grain overlay, vignette shading, and desktop scroll rail.
 - **Cyberpunk Acid Glitch Mode:** High-saturation chromatic aberration theme toggle with CRT scanlines.
@@ -244,7 +244,7 @@ The Meme Capsule engineering ecosystem is organized into **three distinct, decou
 2. **Promotional, Press & Web Platform (`memecapsule.wtf`):**
    - Multi-page web repository deployed on GitHub Pages with custom domain DNS routing.
    - Built with React 18, Vite 5, Tailwind CSS v3, and static HTML prerendering via `vite-plugin-prerender`.
-   - Focus: Live interactive drop preview simulator (5-drop quota + lockout bumper), 3D phone mockups with authentic WebP screenshots and lightbox zoom, Kage-inspired atmospheric UI, Section 04.5 Under the Hood, `/about` Press Kit, 15-question accordion FAQ, Formspree contact form, and Google AdSense monetization (`meme1`).
+   - Focus: Live interactive drop preview simulator (upfront 10-meme FIFO prefetch buffer + lockout bumper), 3D phone mockups with authentic WebP screenshots and lightbox zoom, Kage-inspired atmospheric UI, Section 04.5 Under the Hood, `/about` Press Kit, 15-question accordion FAQ, Formspree contact form, and Google AdSense monetization (`meme1`).
 3. **Serverless Edge Backend, Database & Internal Workbenches (This Repository):**
    - Deployed on Cloudflare Pages (`https://meme-capsule-eww.pages.dev`).
    - Built with Cloudflare Pages Functions, Cloudflare D1 (SQLite), Cloudflare R2 (media bucket), and internal React 19 Neo-Brutalist workbenches.
@@ -555,14 +555,20 @@ Settings was refactored from an ephemeral popup modal into an authentic first-cl
 - **Dynamic Route-Specific SEO Metadata Injection:** 
   During build-time prerendering, `ReactSSRRenderer` reads route configurations (`ROUTE_SEO`) and surgically injects route-specific `<title>`, `<meta name="description">`, `<link rel="canonical">`, Open Graph tags (`og:title`, `og:description`, `og:url`), and Twitter card metadata directly into each route's generated `index.html`. This ensures 100% crawl fidelity without relying on JavaScript hydration or client-side redirects (`404.html`).
 
-### 4.2 Interactive Live Drop Preview Simulator & Quota Lockout Bumper
+### 4.2 Interactive Live Drop Preview Simulator, Upfront 10-Meme FIFO Buffer & Quota Lockout Bumper
 Located in `src/components/MemePreview.tsx`:
-- **Functional Simulator:** Connects directly to the live Cloudflare edge API (`GET /api/random-meme`) with an automated fallback recovery pool (`FALLBACK_MEMES`).
-- **5-Drop Quota Counter:** Users can experience 5 authentic live drops on the web (`5 -> 4 -> 3 -> 2 -> 1 -> 0`).
-- **Conversion Lockout Bumper:** Upon opening the 5th capsule, a Neo-Brutalist lockout bumper covers the card:
-  - Header: `CAPSULE DEPLETED`
-  - Body: Encourages installing the Android app for unlimited daily drops with rolling prefetch.
-  - CTA Button: Direct Google Play install button with UTM campaign attribution (`getPlayStoreUrl('web_preview_bumper')`).
+- **Upfront 10-Meme FIFO Batch Prefetch Engine:**
+  - On initial mount, concurrently fetches 10 memes from the Cloudflare edge API (`GET /api/random-meme`) with deduplication against URL/ID and an expanded 10-item verified Cloudflare R2 fallback pool (`FALLBACK_MEMES`).
+  - Automatically primes browser bitmap caches using HTML `new Image().src = url` so all 10 images are preloaded and decoded in memory.
+  - Mounts the 1st meme immediately and enqueues the remaining 9 into an in-memory First-In, First-Out (`fifoQueueRef`) buffer.
+- **Zero-Wait & Zero-Loading Screen Interaction:**
+  - Tapping **"HIT ME"** instantly pops the next meme (`fifoQueueRef.current.shift()`) with zero network latency (0ms delay).
+  - The intrusive *"Dropping Capsule..."* loader screen has been completely eliminated from inter-drop transitions; the active card updates immediately with snappy arcade scale micro-feedback.
+- **10-Drop Quota Counter:** Users can experience 10 authentic live preview drops on the web (`10 -> 9 -> ... -> 0`).
+- **Conversion Lockout Bumper:** Upon opening the 10th capsule, a Neo-Brutalist lockout bumper covers the card:
+  - Header: `CAPSULE DEPLETED!`
+  - Body: Encourages installing the Android app for unlimited daily drops, rolling FIFO prefetch, and your personal Meme Vault.
+  - CTA Button: Direct Google Play install button with UTM campaign attribution (`getPlayStoreUrl('preview_depleted')`).
 
 ### 4.3 Interactive Device Mockups, Flagship Hero Phone & Zero-Lag Architecture
 - **Flagship Hero Phone Mockup (`src/components/HeroPhoneMockup.tsx` — DRAFT STATUS):**
@@ -824,7 +830,7 @@ All three codebases share a unified **Neo-Brutalist Cyber-Arcade** design langua
 | **Mobile App (APK)** | In-App Purchases (3 Packs: Ads ₹199, Boards ₹49, Combo ₹199) | `[IMPLEMENTED]` | `@capgo/native-purchases` (`StoreScreen.tsx`) |
 | **Mobile App (APK)** | UGC Reporting & Local Blocklist | `[IMPLEMENTED]` | `ReportModal.tsx` + `localStorage('reported_memes')` |
 | **Promo Web (`.wtf`)** | Official Multi-Page Site (`memecapsule.wtf`)| `[IMPLEMENTED]` | React 19, Vite 8, React Router v7, GitHub Pages |
-| **Promo Web (`.wtf`)** | Interactive Live Drop Preview Simulator | `[IMPLEMENTED]` | `MemePreview.tsx` (5-drop quota & fallback pool) |
+| **Promo Web (`.wtf`)** | Interactive Live Drop Preview Simulator | `[IMPLEMENTED]` | `MemePreview.tsx` (upfront 10-meme FIFO prefetch buffer) |
 | **Promo Web (`.wtf`)** | Conversion Lockout Bumper | `[IMPLEMENTED]` | Bumper overlay with Play Store UTM tracking |
 | **Promo Web (`.wtf`)** | 3D Interactive Phone Mockups (WebP) | `[IMPLEMENTED]` | `Screenshots.tsx` (5 authentic WebP captures + lightbox) |
 | **Promo Web (`.wtf`)** | Kage Atmospheric UI (Preloader, Cursor) | `[IMPLEMENTED]` | `Preloader.tsx`, `CustomCursor.tsx`, `ScrollRail.tsx` |
@@ -902,7 +908,7 @@ All three codebases share a unified **Neo-Brutalist Cyber-Arcade** design langua
 - **3-Tier Partitioning:** The database architecture segregating memes into `Active (Keep)` (111), `Superadmin Excluded` (53), and `Uncurated Backlog` (4,947) via `curation_status`.
 - **Content Blacklist:** Permanent platform ban table (`content_blacklist`) used by moderators to suppress unsafe media.
 - **Under the Hood:** Section 04.5 on the website providing honest architectural transparency.
-- **Bumper:** The modal locking web preview after 5 drops to encourage Google Play app downloads.
+- **Bumper:** The modal locking web preview after 10 drops to encourage Google Play app downloads.
 - **Acid / Glitch Theme:** The alternative CRT scanline and high-saturation website theme (`html.theme-glitch`).
 
 ---
@@ -956,7 +962,7 @@ ECOSYSTEM STRUCTURE:
 
 2. PUBLIC WEB PLATFORM (memecapsule.wtf):
    - Tech: React 18, Vite 5, Tailwind CSS v3, React Router DOM v6, static HTML prerendering (vite-plugin-prerender with ReactSSRRenderer) on GitHub Pages.
-   - Core Features: Live Drop Simulator (5-drop quota + lockout bumper with Play Store UTM tracking), 3D interactive phone mockups (5 authentic WebP captures + lightbox zoom), Kage atmospheric UI (Preloader, CustomCursor, GrainOverlay, Vignette, ScrollRail), Section 04.5 Under the Hood, /about Press Kit (copy kit & brand downloads), /privacy policy, Formspree contact form (xwlenwzr with privacy consent), Google AdSense unit meme1 (slot 6291908699, ca-pub-2093403233028868), and SEO/GEO (llms.txt, Schema.org).
+   - Core Features: Live Drop Simulator (upfront 10-meme FIFO prefetch buffer + lockout bumper with Play Store UTM tracking), 3D interactive phone mockups (5 authentic WebP captures + lightbox zoom), Kage atmospheric UI (Preloader, CustomCursor, GrainOverlay, Vignette, ScrollRail), Section 04.5 Under the Hood, /about Press Kit (copy kit & brand downloads), /privacy policy, Formspree contact form (xwlenwzr with privacy consent), Google AdSense unit meme1 (slot 6291908699, ca-pub-2093403233028868), and SEO/GEO (llms.txt, Schema.org).
 
 3. SERVERLESS EDGE BACKEND & INTERNAL WORKBENCHES (meme-capsule-eww.pages.dev - This Repo):
    - Tech: Cloudflare Pages Functions, Cloudflare D1 (SQLite with 13 migrations), Cloudflare R2 (bucket memes, $0.00 egress).
