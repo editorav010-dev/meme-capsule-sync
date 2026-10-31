@@ -537,6 +537,16 @@ Settings was refactored from an ephemeral popup modal into an authentic first-cl
    - Home landing page top-left Settings button directly navigates to `setActiveTab('settings')`.
    - Category segmented control (`EXPERIENCE`, `MEMBERSHIP`, `PRIVACY`) acts as clean sub-navigation within the tab, preserving all feed customization toggles, Store & entitlement checks, footprint KPIs, data wiping modals, and analytics consent management.
 
+### 3.15 Firebase Cloud Messaging (FCM) Push Notifications Integration (`com.meme.capsule`)
+- **Plugin & Native Bridge:**
+  - Integrated `@capacitor/push-notifications` (v8.1.3) with Capacitor 8 container.
+  - Added Android 13+ runtime permission: `<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />` in `android/app/src/main/AndroidManifest.xml`.
+  - Configured `google-services.json` in `android/app/google-services.json` and root, activating the Google Services Gradle plugin (`com.google.gms.google-services:4.4.4`).
+- **Push Notification Service (`src/services/pushNotifications.ts`):**
+  - Manages permission requests, token acquisition, and error handling with native platform detection guard (`Capacitor.isNativePlatform()`).
+  - Automatically syncs newly registered FCM tokens to the Cloudflare Pages backend endpoint (`POST /api/notifications/register`).
+  - Implements notification reception and action listeners (`pushNotificationActionPerformed`), dispatching custom window events (`meme_capsule_push_action`) and supporting deep-link navigation into `'home'`, `'favorites'`, `'boards'`, or `'settings'`.
+
 ---
 
 ## 4. PART B: PROMOTIONAL, PRESS & WEB PLATFORM (`memecapsule.wtf`)
