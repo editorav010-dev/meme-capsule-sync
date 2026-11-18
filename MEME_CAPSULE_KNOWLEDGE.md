@@ -39,6 +39,8 @@
    - 3.12 [Critical Engineering Guardrails & Styling Gotchas (Tailwind v4)](#312-critical-engineering-guardrails--styling-gotchas-tailwind-v4)
    - 3.13 [Phase 1 Android Analytics Instrumentation (Offline SQLite Queue, Consent & Diagnostics)](#313-phase-1-android-analytics-instrumentation-offline-sqlite-queue-consent--diagnostics)
    - 3.14 [First-Class Settings Tab Architecture & Redesign (v3.8)](#314-first-class-settings-tab-architecture--redesign-v38)
+   - 3.15 [Firebase Cloud Messaging (FCM) Push Notifications Integration (`com.meme.capsule`)](#315-firebase-cloud-messaging-fcm-push-notifications-integration-commemecapsule)
+   - 3.16 [Card Stack Physics, Dynamic Aspect-Ratio Morphing & Brag Launch Media](#316-card-stack-physics-dynamic-aspect-ratio-morphing--brag-launch-media)
 4. [PART B: PROMOTIONAL, PRESS & WEB PLATFORM (`memecapsule.wtf`)](#4-part-b-promotional-press--web-platform-memecapsulewtf)
    - 4.1 [Platform Architecture, Modernized Stack & Static HTML Prerendering](#41-platform-architecture-modernized-stack--static-html-prerendering)
    - 4.2 [Interactive Live Drop Preview Simulator, Upfront 10-Meme FIFO Buffer & Quota Lockout Bumper](#42-interactive-live-drop-preview-simulator-upfront-10-meme-fifo-buffer--quota-lockout-bumper)
@@ -555,6 +557,14 @@ Settings was refactored from an ephemeral popup modal into an authentic first-cl
   - Automatically syncs newly registered FCM tokens to the Cloudflare Pages backend endpoint (`POST /api/notifications/register`).
   - Implements notification reception and action listeners (`pushNotificationActionPerformed`), dispatching custom window events (`meme_capsule_push_action`) and supporting deep-link navigation into `'home'`, `'favorites'`, `'boards'`, or `'settings'`.
 - **Build Artifacts:** Debug APK (`meme-capsule-debug.apk`, 14MB), Release APK (`app-release.apk` / `meme-capsule-latest.apk`, 5.8MB), and Release AAB (`app-release.aab`, 7.7MB) generated and committed to `builds/`.
+
+### 3.16 Card Stack Physics, Dynamic Aspect-Ratio Morphing & Brag Launch Media
+- **Frontend Swiping & Morphing Architecture (`stack_card_machenism.md`):**
+  - Documented complete mathematical physics of the 4-card 3D perspective spring stack (`@use-gesture/react` + `@react-spring/web`).
+  - Outlined zero-jank image dimension pre-sniffing (`sniffImageDimensions`) with memory LRU cache and 220ms cubic-bezier dynamic canvas morphing without clipping or letterbox distortion.
+  - Added mobile resilience patterns including background resume hydration via `visibilitychange` and 2.5s decryption shimmer watchdogs.
+- **Product Launch Assets & Brag Workflow (`brag/`, `screenshots/`, `brag-final.mp4`):**
+  - Produced 30s 1080x1920 launch showcase video (`brag-final.mp4`) with synced cyberpunk music and 9-page visual asset documentation.
 
 ---
 
